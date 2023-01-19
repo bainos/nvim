@@ -1,17 +1,11 @@
 local M = {}
 
-local utils = require "utils"
 local api = vim.api
 
 M.highlight = true
 
 function M.toggle()
   M.highlight = not M.highlight
-  if M.highlight then
-    utils.info("Enabled document highlight", "Document Highlight")
-  else
-    utils.warn("Disabled document highlight", "Document Highlight")
-  end
 end
 
 function M.highlight(client, bufnr)

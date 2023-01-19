@@ -2,17 +2,8 @@ local M = {}
 
 function M.setup(servers, server_options)
   local lspconfig = require "lspconfig"
-  local icons = require "config.icons"
 
-  require("mason").setup {
-    ui = {
-      icons = {
-        package_installed = icons.lsp.server_installed,
-        package_pending = icons.lsp.server_pending,
-        package_uninstalled = icons.lsp.server_uninstalled,
-      },
-    },
-  }
+  require("mason").setup {}
   require("mason-null-ls").setup {
     automatic_setup = true,
   }

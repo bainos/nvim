@@ -3,30 +3,6 @@ local M = {}
 -- local util = require "lspconfig.util"
 
 local servers = {
-  gopls = {
-    settings = {
-      gopls = {
-        hints = {
-          assignVariableTypes = true,
-          compositeLiteralFields = true,
-          compositeLiteralTypes = true,
-          constantValues = true,
-          functionTypeParameters = true,
-          parameterNames = true,
-          rangeVariableTypes = true,
-        },
-        semanticTokens = true,
-      },
-    },
-  },
-  html = {},
-  jsonls = {
-    settings = {
-      json = {
-        schemas = require("schemastore").json.schemas(),
-      },
-    },
-  },
   pyright = {
     settings = {
       python = {
@@ -35,18 +11,6 @@ local servers = {
           autoSearchPaths = true,
           useLibraryCodeForTypes = true,
           diagnosticMode = "workspace",
-        },
-      },
-    },
-  },
-  -- pylsp = {}, -- Integration with rope for refactoring - https://github.com/python-rope/pylsp-rope
-  rust_analyzer = {
-    settings = {
-      ["rust-analyzer"] = {
-        cargo = { allFeatures = true },
-        checkOnSave = {
-          command = "cargo clippy",
-          extraArgs = { "--no-deps" },
         },
       },
     },
@@ -76,35 +40,7 @@ local servers = {
       },
     },
   },
-  tsserver = {
-    disable_formatting = true,
-    settings = {
-      javascript = {
-        inlayHints = {
-          includeInlayEnumMemberValueHints = true,
-          includeInlayFunctionLikeReturnTypeHints = true,
-          includeInlayFunctionParameterTypeHints = true,
-          includeInlayParameterNameHints = "all", -- 'none' | 'literals' | 'all';
-          includeInlayParameterNameHintsWhenArgumentMatchesName = true,
-          includeInlayPropertyDeclarationTypeHints = true,
-          includeInlayVariableTypeHints = true,
-        },
-      },
-      typescript = {
-        inlayHints = {
-          includeInlayEnumMemberValueHints = true,
-          includeInlayFunctionLikeReturnTypeHints = true,
-          includeInlayFunctionParameterTypeHints = true,
-          includeInlayParameterNameHints = "all", -- 'none' | 'literals' | 'all';
-          includeInlayParameterNameHintsWhenArgumentMatchesName = true,
-          includeInlayPropertyDeclarationTypeHints = true,
-          includeInlayVariableTypeHints = true,
-        },
-      },
-    },
-  },
   vimls = {},
-  -- tailwindcss = {},
   yamlls = {
     schemastore = {
       enable = true,
@@ -118,28 +54,7 @@ local servers = {
       },
     },
   },
-  jdtls = {},
-  dockerls = {},
-  -- graphql = {},
   bashls = {},
-  taplo = {},
-  -- omnisharp = {},
-  -- kotlin_language_server = {},
-  -- emmet_ls = {},
-  -- marksman = {},
-  -- angularls = {},
-  -- sqls = {
-  -- settings = {
-  --   sqls = {
-  --     connections = {
-  --       {
-  --         driver = "sqlite3",
-  --         dataSourceName = os.getenv "HOME" .. "/workspace/db/chinook.db",
-  --       },
-  --     },
-  --   },
-  -- },
-  -- },
 }
 
 function M.on_attach(client, bufnr)
@@ -156,9 +71,6 @@ function M.on_attach(client, bufnr)
   if caps.documentFormattingProvider then
     vim.bo[bufnr].formatexpr = "v:lua.vim.lsp.formatexpr()"
   end
-
-  -- Configure key mappings
-  require("config.lsp.keymaps").setup(client, bufnr)
 
   -- Configure highlighting
   require("config.lsp.highlighter").setup(client, bufnr)
@@ -184,15 +96,15 @@ function M.on_attach(client, bufnr)
   end
 
   -- nvim-navic
-  if caps.documentSymbolProvider then
-    local navic = require "nvim-navic"
-    navic.attach(client, bufnr)
-  end
+  -- if caps.documentSymbolProvider then
+  --    local navic = require "nvim-navic"
+  --    navic.attach(client, bufnr)
+  -- end
 
   if client.name ~= "null-ls" then
     -- inlay-hints
-    local ih = require "inlay-hints"
-    ih.on_attach(client, bufnr)
+    -- local ih = require "inlay-hints"
+    -- ih.on_attach(client, bufnr)
 
     -- semantic highlighting -- https://github.com/neovim/neovim/pull/21100
     -- if caps.semanticTokensProvider and caps.semanticTokensProvider.full then
