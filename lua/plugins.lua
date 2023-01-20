@@ -2,7 +2,7 @@ local M = {}
 
 function M.setup()
 	-- Indicate first time installation
-	local is_boostrap = false
+	-- local is_boostrap = false
 
 	-- packer.nvim configuration
 	local conf = {
@@ -26,7 +26,7 @@ function M.setup()
 				"https://github.com/wbthomason/packer.nvim",
 				install_path,
 			})
-			is_boostrap = true
+			-- is_boostrap = true
 			vim.cmd([[packadd packer.nvim]])
 		end
 
@@ -52,7 +52,7 @@ function M.setup()
 		-- Autopairs
 		use({
 			"windwp/nvim-autopairs",
-			opt = true,
+			opt = false,
 			event = "InsertEnter",
 			module = { "nvim-autopairs.completion.cmp", "nvim-autopairs" },
 			config = function()
@@ -74,6 +74,7 @@ function M.setup()
 				"hrsh7th/cmp-nvim-lua",
 				"ray-x/cmp-treesitter",
 				"hrsh7th/cmp-cmdline",
+				"saadparwaiz1/cmp_luasnip",
 				{
 					"onsails/lspkind-nvim",
 					module = { "lspkind" },
@@ -81,6 +82,7 @@ function M.setup()
 			},
 		})
 
+		-- LSP
 		use({
 			"neovim/nvim-lspconfig",
 			opt = false,
@@ -125,6 +127,40 @@ function M.setup()
 				"WhoIsSethDaniel/mason-tool-installer.nvim",
 				{ "jayp0521/mason-null-ls.nvim" },
 			},
+		})
+
+		-- Treesitter
+		use({
+			"nvim-treesitter/nvim-treesitter",
+			run = ":TSUpdate",
+			config = function()
+				require("config.treesitter").setup()
+			end,
+			requires = {
+				{ "JoosepAlviste/nvim-ts-context-commentstring", event = "BufReadPre" },
+			},
+		})
+
+		-- Better Comment
+		use({
+			"numToStr/Comment.nvim",
+			keys = { "gc", "gcc", "gbc" },
+			config = function()
+				require("config.comment").setup()
+			end,
+			disable = false,
+		})
+		use({ "tpope/vim-commentary", keys = { "gc", "gcc", "gbc" }, disable = true })
+
+		-- Better surround
+		use({ "tpope/vim-surround", event = "BufReadPre" })
+		use({
+			"Matt-A-Bennett/vim-surround-funk",
+			event = "BufReadPre",
+			config = function()
+				require("config.surroundfunk").setup()
+			end,
+			disable = true,
 		})
 	end
 
