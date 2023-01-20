@@ -1,4 +1,0 @@
-(
-  ("string_content") @query
-    ; (#match? @query ";; query")
-)
