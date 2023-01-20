@@ -33,7 +33,6 @@ return require('packer').startup(function()
   require'nvim-treesitter.configs'.setup {
     highlight = {
       enable = true,
-      disable = { "ruby" }
     },
     ensure_installed = {
       "python",
