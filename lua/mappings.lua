@@ -1,28 +1,13 @@
-function map(mode, shortcut, command)
-  vim.api.nvim_set_keymap(mode, shortcut, command, { noremap = true, silent = true })
-end
+vim.keymap.set('n', '<C-b>', ':noh<cr>:call clearmatches()<cr>', {})
+vim.keymap.set('n', '<Leader>w', ':w<cr>', {})
 
-function nmap(shortcut, command)
-  map('n', shortcut, command)
-end
+local lsp_diagnostic = vim.diagnostic
+vim.keymap.set('n', '<Leader>d', lsp_diagnostic.open_float, {})
+vim.keymap.set('n', '<Leader>n', lsp_diagnostic.goto_next, {})
+vim.keymap.set('n', '<Leader>p', lsp_diagnostic.goto_prev, {})
 
-function imap(shortcut, command)
-  map('i', shortcut, command)
-end
-
-function vmap(shortcut, command)
-  map('v', shortcut, command)
-end
-
-function cmap(shortcut, command)
-  map('c', shortcut, command)
-end
-
-function tmap(shortcut, command)
-  map('t', shortcut, command)
-end
-
-nmap('<C-b>', ':noh<cr>:call clearmatches()<cr>')
-nmap('<Leader>d', ':lua vim.diagnostic.open_float()<CR>')
-nmap('<Leader>n', ':lua vim.diagnostic.goto_next()<CR>')
-nmap('<Leader>p', ':lua vim.diagnostic.goto_prev()<CR>')
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
+vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
+vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})

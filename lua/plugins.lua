@@ -11,49 +11,31 @@ return require('packer').startup(function()
   use "williamboman/mason.nvim"
   use "williamboman/mason-lspconfig.nvim"
   --use({
-    --"glepnir/lspsaga.nvim",
-    --branch = "main",
-    --config = function()
-        --require('lspsaga').setup({
-          --error_sign = '!',
-          --warn_sign = '^',
-          --hint_sign = '?',
-          --infor_sign = '~',
-          --border_style = "round",
-          --code_action_prompt = {
-            --enable = false
-          --}
-        --})
-    --end,
+  --"glepnir/lspsaga.nvim",
+  --branch = "main",
+  --config = function()
+  --require('lspsaga').setup({
+  --error_sign = '!',
+  --warn_sign = '^',
+  --hint_sign = '?',
+  --infor_sign = '~',
+  --border_style = "round",
+  --code_action_prompt = {
+  --enable = false
+  --}
+  --})
+  --end,
   --})
   use 'hrsh7th/nvim-compe'
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use 'scrooloose/nerdcommenter' -- commenting shortcuts
 
-  require'nvim-treesitter.configs'.setup {
-    highlight = {
-      enable = true,
-    },
-    ensure_installed = {
-      "python",
-      "lua",
-      "hcl",
-      "bash",
-      "awk",
-      "vim",
-    },
-  }
-
-  vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-    vim.lsp.diagnostic.on_publish_diagnostics, {
-        virtual_text = false
-      }
-  )
-
   -- search
-  use { 'nvim-telescope/telescope.nvim', requires = {{'nvim-lua/popup.nvim'}, {'nvim-lua/plenary.nvim'}} }
+  use { 'nvim-telescope/telescope.nvim', requires = { { 'nvim-lua/popup.nvim' }, { 'nvim-lua/plenary.nvim' } } }
 
   -- python
   use { 'Vimjas/vim-python-pep8-indent', ft = 'python' }
-end)
 
+  -- themes
+  use "ellisonleao/gruvbox.nvim"
+end)
