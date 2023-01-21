@@ -1,6 +1,6 @@
 require('settings')
-require('mappings')
 require('plugins')
 require('lsp-config')
 require('autocompletion')
 require('themes')
+require('mappings')

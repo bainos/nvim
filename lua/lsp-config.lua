@@ -1,3 +1,12 @@
+SERVERS = {
+  "bashls",
+  "dockerls",
+  "pyright",
+  --"sumneko_lua",
+  --"terraformls",
+  "yamlls",
+}
+
 require 'nvim-treesitter.configs'.setup {
   highlight = {
     enable = true,
@@ -6,8 +15,8 @@ require 'nvim-treesitter.configs'.setup {
     "bash",
     "dockerfile",
     "python",
-    "lua",
-    "terraform",
+    --"lua",
+    --"terraform",
     "vim",
     "yaml",
   },
@@ -22,14 +31,7 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
 require('mason').setup({})
 
 require('mason-lspconfig').setup({
-  ensure_installed = {
-    "bashls",
-    "dockerls",
-    "pyright",
-    "sumneko_lua",
-    "terraformls",
-    "yamlls",
-  },
+  ensure_installed = SERVERS,
   automatic_installation = false,
 })
 
@@ -45,7 +47,15 @@ require 'lspconfig'.dockerls.setup {}
 require 'lspconfig'.pyright.setup {}
 
 -- https://github.com/sumneko/lua-language-server/wiki/Getting-Started#command-line
-require 'lspconfig'.sumneko_lua.setup {}
+require 'lspconfig'.sumneko_lua.setup {
+  settings = {
+    Lua = {
+      diagnostics = {
+        globals = { 'vim', 'use' }
+      }
+    }
+  }
+}
 
 -- https://github.com/hashicorp/terraform-ls/releases
 require 'lspconfig'.terraformls.setup {}
@@ -53,4 +63,3 @@ require 'lspconfig'.terraformls.setup {}
 -- yarn global add yaml-language-server
 require 'lspconfig'.yamlls.setup {}
 
-vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.format()]]
