@@ -10,22 +10,6 @@ function M.setup()
     "yamlls",
   }
 
-  -- highlitimg
-  require 'nvim-treesitter.configs'.setup {
-    highlight = {
-      enable = true,
-    },
-    ensure_installed = {
-      "bash",
-      "dockerfile",
-      "python",
-      "lua",
-      "terraform",
-      "vim",
-      "yaml",
-    },
-  }
-
   -- language servers manager
   require('mason').setup({})
   require('mason-lspconfig').setup({
