@@ -35,7 +35,7 @@ function M.setup()
       Lua = {
         diagnostics = {
           globals = { 'vim', 'use' }
-        }
+        },
       }
     }
   }
@@ -44,7 +44,18 @@ function M.setup()
   require 'lspconfig'.terraformls.setup {}
 
   -- yarn global add yaml-language-server
-  require 'lspconfig'.yamlls.setup {}
+  require 'lspconfig'.yamlls.setup {
+    settings = {
+      trace = {
+        server = "debug"
+      },
+      yaml = {
+        schemas = { kubernetes = "/*.yaml" },
+      },
+      schemaDownload = { enable = true },
+      validate = true,
+    }
+  }
 
   vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
     vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -52,13 +63,38 @@ function M.setup()
   }
   )
 
-  -- Set up lspconfig.
+  -- Setup lspconfig completion
   local capabilities = require('cmp_nvim_lsp').default_capabilities()
   for _, server in pairs(lsp_servers) do
     require('lspconfig')[server].setup {
       capabilities = capabilities
     }
   end
+
+  -- Helm (alpha)
+  -- https://github.com/mrjosh/helm-ls
+  -- Manual install
+  local configs = require('lspconfig.configs')
+  local lspconfig = require('lspconfig')
+  local util = require('lspconfig.util')
+
+  if not configs.helm_ls then
+    configs.helm_ls = {
+      default_config = {
+        cmd = { "helm_ls_linux_amd64", "serve" },
+        filetypes = { 'helm' },
+        root_dir = function(fname)
+          return util.root_pattern('Chart.yaml')(fname)
+        end,
+      },
+    }
+  end
+
+  lspconfig.helm_ls.setup {
+    filetypes = { "helm" },
+    cmd = { "helm_ls_linux_amd64", "serve" },
+  }
+
 end
 
 return M
