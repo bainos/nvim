@@ -40,21 +40,6 @@ function M.setup()
     table.insert(runtime_path, 'lua/?.lua')
     table.insert(runtime_path, 'lua/?/init.lua')
 
-
-    -- yarn global add yaml-language-server
-    require 'lspconfig'.yamlls.setup {
-        settings = {
-            trace = {
-                server = 'debug',
-            },
-            yaml = {
-                schemas = { kubernetes = '/*.yaml', },
-            },
-            schemaDownload = { enable = true, },
-            validate = true,
-        },
-    }
-
     require 'lspconfig'.sumneko_lua.setup {
         capabilities = capabilities,
         settings = {
@@ -66,11 +51,12 @@ function M.setup()
                     path = runtime_path,
                 },
                 diagnostics = {
-                    globals = { 'vim', 'use', },
+                    globals = { 'vim', 'use', 'bufnr', },
                 },
                 workspace = {
                     -- Make the server aware of Neovim runtime files
                     library = vim.api.nvim_get_runtime_file('', true),
+                    checkThirdParty = false,
                 },
                 --format = { enable = false },
                 format = {
@@ -118,9 +104,26 @@ function M.setup()
 
     -- yarn global add yaml-language-server
     require 'lspconfig'.yamlls.setup {
-        capabilities = capabilities,
+        on_attach = function()
+            if vim.bo.buftype ~= '' or vim.bo.filetype == 'helm' then
+                require 'lspconfig'.yamlls.setup {
+                    diagnostics = false,
+                }
+            end
+        end,
+        settings = {
+            trace = {
+                server = 'debug',
+            },
+            yaml = {
+                schemas = { kubernetes = '/*.yaml', },
+            },
+            schemaDownload = { enable = true, },
+            validate = true,
+        },
     }
 
+    -- disable inline diagnostic message
     vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
         virtual_text = false,
     })

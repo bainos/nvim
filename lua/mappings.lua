@@ -35,9 +35,7 @@ function M.setup()
         { 'BufWritePre', },
         --{ command = 'lua vim.lsp.buf.format()' }
         { callback = buf_format, }
-    --{ callback = vim.lsp.buf.format }
     )
-    api.nvim_create_autocmd({ 'BufWritePre', }, { command = 'FixWhitespace', })
 end
 
 return M
