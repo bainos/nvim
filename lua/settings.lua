@@ -2,6 +2,12 @@ local M = {}
 
 function M.setup()
     local home = os.getenv 'HOME'
+    local is_linux = true
+    if home == nil
+    then
+        home = os.getenv 'LOCALAPPDATA'
+        is_linux = false
+    end
 
     vim.g.mapleader = ','
     vim.g.maplocalleader = '\\'
@@ -11,7 +17,7 @@ function M.setup()
     vim.opt.backspace = 'indent,eol,start' -- backspace works on every char in insert mode
     vim.opt.completeopt = 'menu,menuone,noselect'
     vim.opt.history = 1000
-    vim.opt.dictionary = '/usr/share/dict/words'
+    if is_linux then vim.opt.dictionary = '/usr/share/dict/words' end
     vim.opt.startofline = true
     vim.opt.mouse = nil
 

@@ -5,7 +5,8 @@ function M.setup()
         'bashls',
         'dockerls',
         'pyright',
-        'sumneko_lua',
+        --'sumneko_lua',
+        'lua_ls',
         'terraformls',
         'yamlls',
     }
@@ -40,7 +41,7 @@ function M.setup()
     table.insert(runtime_path, 'lua/?.lua')
     table.insert(runtime_path, 'lua/?/init.lua')
 
-    require 'lspconfig'.sumneko_lua.setup {
+    require 'lspconfig'.lua_ls.setup {
         capabilities = capabilities,
         settings = {
             Lua = {
