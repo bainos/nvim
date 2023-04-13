@@ -1,13 +1,16 @@
 local M = {}
 
 function M.setup()
+    --local bufopts = { noremap=true, silent=true, buffer=bufnr }
+    local opts = { noremap = true, silent = true, }
+
     -- search
     vim.keymap.set('n', '<C-b>', ':noh<cr>:call clearmatches()<cr>', {})
     vim.keymap.set('n', '*', '*N', {})
 
     -- buffers
-    vim.keymap.set('n', '<Leader>w', ':w<cr>', {})
-    vim.keymap.set('n', '<Leader>qa', ':qa<cr>', {})
+    vim.keymap.set('n', '<Leader>w', ':wa<cr>', {})
+    vim.keymap.set('n', '<Leader>q', ':qa<cr>', {})
     vim.keymap.set('n', '<Leader>#', ':b#<cr>', {})
 
     -- toggle line numers
@@ -18,6 +21,10 @@ function M.setup()
     vim.keymap.set('n', '<Leader>d', lsp_diagnostic.open_float, {})
     vim.keymap.set('n', '<Leader>n', lsp_diagnostic.goto_next, {})
     vim.keymap.set('n', '<Leader>p', lsp_diagnostic.goto_prev, {})
+
+    -- code actions
+    vim.keymap.set('n', '<Leader>a', vim.lsp.buf.code_action, opts)
+    vim.keymap.set('n', '<Leader>fr', function() vim.lsp.buf.format { async = true, } end, opts)
 
     -- file/buffer manager
     local builtin = require 'telescope.builtin'
