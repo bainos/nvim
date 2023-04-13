@@ -4,7 +4,8 @@ function M.setup()
     local lsp_servers = {
         'bashls',
         'dockerls',
-        'pyright',
+        --'pyright',
+        'ruff_lsp',
         --'sumneko_lua',
         'lua_ls',
         'terraformls',
@@ -32,8 +33,18 @@ function M.setup()
     }
 
     -- https://github.com/microsoft/pyright
-    require 'lspconfig'.pyright.setup {
-        capabilities = capabilities,
+    --require 'lspconfig'.pyright.setup {
+    --capabilities = capabilities,
+    --}
+
+    -- https://github.com/charliermarsh/ruff-lsp
+    require 'lspconfig'.ruff_lsp.setup {
+        init_options = {
+            settings = {
+                -- Any extra CLI arguments for `ruff` go here.
+                args = {},
+            },
+        },
     }
 
     -- https://github.com/sumneko/lua-language-server/wiki/Getting-Started#command-line
