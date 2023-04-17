@@ -62,6 +62,18 @@ function M.setup()
         'confirm_done',
         cmp_autopairs.on_confirm_done()
     )
+
+    -- autocmd BufRead,BufNewFile ~/.pyblosxom/data/* set syntax=html
+    api.nvim_create_autocmd(
+        { 'BufRead', 'BufNewFile', },
+        --{ command = 'lua vim.lsp.buf.format()' }
+        {
+            pattern = { '*/templates/*.yaml', '*/templates/*.tpl', 'values.yaml', 'values*.yaml', },
+            callback = function()
+                api.nvim_buf_set_option(0, 'filetype', 'helm')
+            end,
+        }
+    )
 end
 
 return M
