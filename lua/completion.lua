@@ -64,6 +64,7 @@ function M.setup()
     )
 
     -- autocmd BufRead,BufNewFile ~/.pyblosxom/data/* set syntax=html
+    local api = vim.api
     api.nvim_create_autocmd(
         { 'BufRead', 'BufNewFile', },
         --{ command = 'lua vim.lsp.buf.format()' }
