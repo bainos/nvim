@@ -4,12 +4,14 @@ function M.setup()
     local lsp_servers = {
         'bashls',
         'dockerls',
-        --'pyright',
         'ruff_lsp',
-        --'sumneko_lua',
         'lua_ls',
         'terraformls',
         'yamlls',
+        'helm_ls',
+        'azure_pipelines_ls',
+        'rust_analyzer',
+        'rustfmt',
     }
 
     -- language servers manager
@@ -92,26 +94,35 @@ function M.setup()
     -- Helm (alpha)
     -- https://github.com/mrjosh/helm-ls
     -- Manual install
-    local configs = require 'lspconfig.configs'
-    local lspconfig = require 'lspconfig'
+    --local configs = require 'lspconfig.configs'
+    --local lspconfig = require 'lspconfig'
+    --local util = require 'lspconfig.util'
+
+    --if not configs.helm_ls then
+    --configs.helm_ls = {
+    --default_config = {
+    --cmd = { 'helm_ls_linux_amd64', 'serve', },
+    --filetypes = { 'helm', },
+    --root_dir = function(fname)
+    --return util.root_pattern 'Chart.yaml' (fname)
+    --end,
+    --},
+    --}
+    --end
+
+    --lspconfig.helm_ls.setup {
+    --capabilities = capabilities,
+    --filetypes = { 'helm', },
+    --cmd = { 'helm_ls_linux_amd64', 'serve', },
+    --}
+
     local util = require 'lspconfig.util'
-
-    if not configs.helm_ls then
-        configs.helm_ls = {
-            default_config = {
-                cmd = { 'helm_ls_linux_amd64', 'serve', },
-                filetypes = { 'helm', },
-                root_dir = function(fname)
-                    return util.root_pattern 'Chart.yaml' (fname)
-                end,
-            },
-        }
-    end
-
-    lspconfig.helm_ls.setup {
+    require 'lspconfig'.helm_ls.setup {
         capabilities = capabilities,
         filetypes = { 'helm', },
-        cmd = { 'helm_ls_linux_amd64', 'serve', },
+        root_dir = function(fname)
+            return util.root_pattern 'Chart.yaml' (fname)
+        end,
     }
 
     -- yarn global add yaml-language-server
@@ -134,6 +145,20 @@ function M.setup()
             validate = true,
         },
     }
+
+    require 'lspconfig'.azure_pipelines_ls.setup {
+        settings = {
+            yaml = {
+                schemas = {
+                    ['https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json'] = {
+                        '**.yml',
+                    },
+                },
+            },
+        },
+    }
+
+    require 'lspconfig'.rust_analyzer.setup {}
 
     -- disable inline diagnostic message
     vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
