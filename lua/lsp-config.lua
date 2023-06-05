@@ -3,16 +3,18 @@ local M = {}
 function M.setup()
     local lsp_servers = {
         'bashls',
-        'dockerls',
         'ruff_lsp',
-        'lua_ls',
-        'terraformls',
         'yamlls',
-        'helm_ls',
-        'azure_pipelines_ls',
-        'rust_analyzer',
-        'rustfmt',
     }
+
+    if not require 'termux'.is_termux() then
+        table.insert(lsp_servers, 'lua_ls')
+        table.insert(lsp_servers, 'dockerls')
+        table.insert(lsp_servers, 'terraformls')
+        table.insert(lsp_servers, 'helm_ls')
+        table.insert(lsp_servers, 'azure_pipelines_ls')
+        table.insert(lsp_servers, 'rust_analyzer')
+    end
 
     -- language servers manager
     require 'mason'.setup {}
@@ -158,7 +160,27 @@ function M.setup()
         },
     }
 
-    require 'lspconfig'.rust_analyzer.setup {}
+    -- https://rust-analyzer.github.io/manual.html#nvim-lsp
+    require 'lspconfig'.rust_analyzer.setup {
+        settings = {
+            ['rust-analyzer'] = {
+                imports = {
+                    granularity = {
+                        group = 'module',
+                    },
+                    prefix = 'self',
+                },
+                cargo = {
+                    buildScripts = {
+                        enable = true,
+                    },
+                },
+                procMacro = {
+                    enable = true,
+                },
+            },
+        },
+    }
 
     -- disable inline diagnostic message
     vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {

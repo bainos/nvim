@@ -13,6 +13,7 @@ function M.setup()
             'terraform',
             'vim',
             'yaml',
+            'rust',
         },
     }
 end

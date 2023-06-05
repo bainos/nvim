@@ -85,6 +85,8 @@ function M.setup()
 
         -- themes
         use 'ellisonleao/gruvbox.nvim'
+        use 'one-dark/onedark.nvim'
+        use 'jacoborus/tender.vim'
     end
 
     local packer = require 'packer'
