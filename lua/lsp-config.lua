@@ -4,6 +4,7 @@ function M.setup()
     local lsp_servers = {
         'bashls',
         'ruff_lsp',
+        'pyright',
         'yamlls',
     }
 
@@ -37,9 +38,12 @@ function M.setup()
     }
 
     -- https://github.com/microsoft/pyright
-    --require 'lspconfig'.pyright.setup {
-    --capabilities = capabilities,
-    --}
+    require 'lspconfig'.pyright.setup {
+        capabilities = capabilities,
+        handlers = {
+            ['textDocument/publishDiagnostics'] = function(...) end,
+        },
+    }
 
     -- https://github.com/charliermarsh/ruff-lsp
     require 'lspconfig'.ruff_lsp.setup {
@@ -177,6 +181,9 @@ function M.setup()
                 },
                 procMacro = {
                     enable = true,
+                },
+                checkOnSave = {
+                    command = 'clippy',
                 },
             },
         },
