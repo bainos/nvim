@@ -5,7 +5,8 @@ function M.setup()
     require 'mason'.setup()
     require 'mason-null-ls'.setup {
         ensure_installed = {
-            'prettier_d_slim', -- npm install -g prettier_d_slim
+            'prettierd',
+            --'prettier_d_slim', -- npm install -g prettier_d_slim
             --"shellcheck", -- this will work with bashls even if not loaded in null-ls
             'shfmt',
         },
@@ -23,8 +24,11 @@ function M.setup()
             --      },
             --      -- lua
             --null_ls.builtins.diagnostics.shellcheck,
-            null_ls.builtins.formatting.shfmt,
-            null_ls.builtins.formatting.prettier_d_slim.with { filetypes = { 'yaml', 'helm', }, },
+            null_ls.builtins.formatting.shfmt.with {
+                extra_args = { '-i', '2', '-ci', },
+            },
+            --null_ls.builtins.formatting.prettier_d_slim.with { filetypes = { 'yaml', 'helm', }, },
+            null_ls.builtins.formatting.prettierd.with { filetypes = { 'yaml', 'helm', }, },
         },
     }
 
