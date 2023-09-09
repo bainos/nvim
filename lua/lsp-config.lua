@@ -1,19 +1,26 @@
 local M = {}
 
 function M.setup()
-    local lsp_servers = {
-        'bashls',
-        'ruff_lsp',
-        'pyright',
-        'yamlls',
-    }
+    --local lsp_servers = {
+    --'bashls',
+    --'ruff_lsp',
+    --'pyright',
+    --'yamlls',
+    --}
 
-    if not require 'termux'.is_termux() then
+    --if not require 'termux'.is_termux() then
+    --table.insert(lsp_servers, 'lua_ls')
+    --table.insert(lsp_servers, 'dockerls')
+    --table.insert(lsp_servers, 'terraformls')
+    --table.insert(lsp_servers, 'helm_ls')
+    --table.insert(lsp_servers, 'azure_pipelines_ls')
+    --table.insert(lsp_servers, 'rust_analyzer')
+    --end
+
+    local lsp_servers = { 'bashls', }
+
+    if os.getenv 'HOST' == 'archtab' then
         table.insert(lsp_servers, 'lua_ls')
-        table.insert(lsp_servers, 'dockerls')
-        table.insert(lsp_servers, 'terraformls')
-        table.insert(lsp_servers, 'helm_ls')
-        table.insert(lsp_servers, 'azure_pipelines_ls')
         table.insert(lsp_servers, 'rust_analyzer')
     end
 
