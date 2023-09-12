@@ -12,7 +12,7 @@ function M.setup()
         use 'wbthomason/packer.nvim'
 
         -- common
-        use 'ntpeters/vim-better-whitespace'
+        use { 'ntpeters/vim-better-whitespace', run = ':DisableStripWhitespaceOnSave', }
         use 'nvim-lua/plenary.nvim'
         use 'mg979/vim-visual-multi'
         use 'lewis6991/impatient.nvim'
