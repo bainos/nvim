@@ -30,6 +30,7 @@ function M.setup()
     -- npm i -g bash-language-server
     require 'lspconfig'.bashls.setup {
         capabilities = capabilities,
+        filetypes = { 'bash', 'sh', 'zsh', },
     }
 
     -- npm install -g dockerfile-language-server-nodejs

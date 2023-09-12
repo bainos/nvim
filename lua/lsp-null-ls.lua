@@ -9,6 +9,7 @@ function M.setup()
             --'prettier_d_slim', -- npm install -g prettier_d_slim
             --"shellcheck", -- this will work with bashls even if not loaded in null-ls
             'shfmt',
+            --'beautysh', -- https://github.com/lovesegfault/beautysh
         },
         automatic_installation = false,
         --automatic_setup = true, -- Recommended, but optional
@@ -25,7 +26,8 @@ function M.setup()
             --      -- lua
             --null_ls.builtins.diagnostics.shellcheck,
             null_ls.builtins.formatting.shfmt.with {
-                extra_args = { '-i', '2', '-ci', },
+                extra_args = { '-i', '2', '-ci', '-kp', '-s', },
+                filetypes = { 'bash', 'sh', 'zsh', },
             },
             --null_ls.builtins.formatting.prettier_d_slim.with { filetypes = { 'yaml', 'helm', }, },
             null_ls.builtins.formatting.prettierd.with { filetypes = { 'yaml', 'helm', }, },
