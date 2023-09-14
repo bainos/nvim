@@ -23,6 +23,8 @@ function M.setup()
         {
             'nvim-lualine/lualine.nvim',
             dependencies = { 'nvim-tree/nvim-web-devicons', },
+            opts = { theme = 'gruvebox-material', },
+            event = 'VeryLazy',
         },
         -- general dev
         'williamboman/mason.nvim',
@@ -42,12 +44,18 @@ function M.setup()
                 'hrsh7th/cmp-cmdline',
                 'hrsh7th/cmp-vsnip',
                 'saadparwaiz1/cmp_luasnip',
-                -- snippet engines
-                'L3MON4D3/LuaSnip',
             },
         },
+        -- Use <tab> for completion and snippets (supertab)
+        -- first: disable default <tab> and <s-tab> behavior in LuaSnip
+        {
+            'L3MON4D3/LuaSnip',
+            --keys = function()
+            --return {}
+            --end,
+        },
         -- -- highlighting
-        { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate', },
+        { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate', },
         -- comments - <leader>c<space>
         'scrooloose/nerdcommenter',
         -- parens and quotes
@@ -68,7 +76,18 @@ function M.setup()
         'jacoborus/tender.vim',
     }
 
-    local opts = {}
+    local opts = {
+        defaults = {
+            -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
+            -- If you know what you're doing, you can set this to `true` to have all your custom plugins lazy-loaded by default.
+            lazy = false,
+            -- It's recommended to leave version=false for now, since a lot the plugin that support versioning,
+            -- have outdated releases, which may break your Neovim install.
+            version = false, -- always use the latest git commit
+            -- version = "*", -- try installing the latest stable version for plugins that support semver
+        },
+        checker = { enabled = true, }, -- automatically check for plugin updates
+    }
     require 'lazy'.setup(plugins, opts)
 
     require 'lualine'.setup {

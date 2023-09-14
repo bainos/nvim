@@ -17,9 +17,25 @@ function M.setup()
     --table.insert(lsp_servers, 'rust_analyzer')
     --end
 
+    local hostname = os.getenv 'HOST'
+        or os.getenv 'HOSTNAME'
+        or 'UNKOWN'
+
     local lsp_servers = { 'bashls', }
 
-    if os.getenv 'HOST' == 'archtab' then
+    if string.find(hostname, 'farm-net') then
+        table.insert(lsp_servers, 'lua_ls')
+        table.insert(lsp_servers, 'rust_analyzer')
+        table.insert(lsp_servers, 'dockerls')
+        table.insert(lsp_servers, 'terraformls')
+        table.insert(lsp_servers, 'helm_ls')
+        table.insert(lsp_servers, 'azure_pipelines_ls')
+        table.insert(lsp_servers, 'ruff_lsp')
+        table.insert(lsp_servers, 'pyright')
+        table.insert(lsp_servers, 'yamlls')
+    end
+
+    if string.find(hostname, 'archtab') then
         table.insert(lsp_servers, 'lua_ls')
         table.insert(lsp_servers, 'rust_analyzer')
     end

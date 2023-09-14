@@ -27,6 +27,8 @@ function M.setup()
     vim.opt.cindent     = true
     vim.opt.cinkeys:remove '0#'
     vim.opt.indentkeys:remove '0#'
+    vim.opt.cinkeys:remove '0--'
+    vim.opt.indentkeys:remove '0--'
 
     -- Mapping waiting time
     vim.opt.timeout     = false
