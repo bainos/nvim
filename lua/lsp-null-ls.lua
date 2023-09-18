@@ -24,15 +24,15 @@ function M.setup()
         sources = {
             -- common
             --{
-                --null_ls.builtins.code_actions.refactoring,
-                --filetypes = { 'lua', 'python', 'bash', 'sh', 'zsh', 'rust', },
+            --null_ls.builtins.code_actions.refactoring,
+            --filetypes = { 'lua', 'python', 'bash', 'sh', 'zsh', 'rust', },
             --},
             -- bash|sh|zsh
             null_ls.builtins.formatting.shfmt.with {
                 extra_args = { '-i', '2', '-ci', '-kp', '-s', },
                 filetypes = { 'bash', 'sh', 'zsh', },
             },
-            null_ls.builtins.formatting.prettierd.with { filetypes = { 'yaml', 'helm', }, },
+            null_ls.builtins.formatting.prettierd.with { filetypes = { 'yaml', 'helm', 'k8s', 'azp', }, },
         },
     }
 

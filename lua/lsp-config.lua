@@ -1,22 +1,6 @@
 local M = {}
 
 function M.setup()
-    --local lsp_servers = {
-    --'bashls',
-    --'ruff_lsp',
-    --'pyright',
-    --'yamlls',
-    --}
-
-    --if not require 'termux'.is_termux() then
-    --table.insert(lsp_servers, 'lua_ls')
-    --table.insert(lsp_servers, 'dockerls')
-    --table.insert(lsp_servers, 'terraformls')
-    --table.insert(lsp_servers, 'helm_ls')
-    --table.insert(lsp_servers, 'azure_pipelines_ls')
-    --table.insert(lsp_servers, 'rust_analyzer')
-    --end
-
     local hostname = os.getenv 'HOST'
         or os.getenv 'HOSTNAME'
         or 'UNKOWN'
@@ -28,7 +12,6 @@ function M.setup()
         table.insert(lsp_servers, 'rust_analyzer')
         table.insert(lsp_servers, 'dockerls')
         table.insert(lsp_servers, 'terraformls')
-        table.insert(lsp_servers, 'helm_ls')
         table.insert(lsp_servers, 'azure_pipelines_ls')
         table.insert(lsp_servers, 'ruff_lsp')
         table.insert(lsp_servers, 'pyright')
@@ -61,6 +44,7 @@ function M.setup()
         capabilities = capabilities,
     }
 
+    -- Python
     -- https://github.com/microsoft/pyright
     require 'lspconfig'.pyright.setup {
         capabilities = capabilities,
@@ -69,6 +53,7 @@ function M.setup()
         },
     }
 
+    -- Python
     -- https://github.com/charliermarsh/ruff-lsp
     require 'lspconfig'.ruff_lsp.setup {
         init_options = {
@@ -79,6 +64,7 @@ function M.setup()
         },
     }
 
+    -- Lua
     -- https://github.com/sumneko/lua-language-server/wiki/Getting-Started#command-line
     local runtime_path = vim.split(package.path, ';')
     table.insert(runtime_path, 'lua/?.lua')
@@ -116,54 +102,49 @@ function M.setup()
         },
     }
 
+    -- Terraform
     -- https://github.com/hashicorp/terraform-ls/releases
     require 'lspconfig'.terraformls.setup {
         capabilities = capabilities,
     }
 
-    -- Helm (alpha)
+    -- Helm
     -- https://github.com/mrjosh/helm-ls
-    -- Manual install
-    --local configs = require 'lspconfig.configs'
-    --local lspconfig = require 'lspconfig'
-    --local util = require 'lspconfig.util'
-
-    --if not configs.helm_ls then
-    --configs.helm_ls = {
-    --default_config = {
-    --cmd = { 'helm_ls_linux_amd64', 'serve', },
-    --filetypes = { 'helm', },
-    --root_dir = function(fname)
-    --return util.root_pattern 'Chart.yaml' (fname)
-    --end,
-    --},
-    --}
-    --end
-
-    --lspconfig.helm_ls.setup {
-    --capabilities = capabilities,
-    --filetypes = { 'helm', },
-    --cmd = { 'helm_ls_linux_amd64', 'serve', },
-    --}
-
+    -- curl -L https://github.com/mrjosh/helm-ls/releases/download/master/helm_ls_linux_amd64 --output $HOME/.local/bin/helm_ls
+    local configs = require 'lspconfig.configs'
+    local lspconfig = require 'lspconfig'
     local util = require 'lspconfig.util'
-    require 'lspconfig'.helm_ls.setup {
-        capabilities = capabilities,
+
+    if not configs.helm_ls then
+        configs.helm_ls = {
+            default_config = {
+                cmd = { 'helm_ls', 'serve', },
+                filetypes = { 'helm', },
+                root_dir = function(fname)
+                    return util.root_pattern 'Chart.yaml' (fname)
+                end,
+            },
+        }
+    end
+
+    lspconfig.helm_ls.setup {
         filetypes = { 'helm', },
-        root_dir = function(fname)
-            return util.root_pattern 'Chart.yaml' (fname)
-        end,
+        cmd = { 'helm_ls', 'serve', },
     }
 
-    -- yarn global add yaml-language-server
+    -- YAML
     require 'lspconfig'.yamlls.setup {
+        --on_attach = function()
+        --if vim.bo.buftype ~= '' or vim.bo.filetype == 'helm' then
+        --require 'lspconfig'.yamlls.setup {
+        --diagnostics = false,
+        --}
+        --end
+        --end,
         on_attach = function()
-            if vim.bo.buftype ~= '' or vim.bo.filetype == 'helm' then
-                require 'lspconfig'.yamlls.setup {
-                    diagnostics = false,
-                }
-            end
+            vim.bo.syn = 'yaml'
         end,
+        filetypes = { 'k8s', },
         settings = {
             trace = {
                 server = 'debug',
@@ -176,7 +157,12 @@ function M.setup()
         },
     }
 
+    -- Azure Pipelines
     require 'lspconfig'.azure_pipelines_ls.setup {
+        filetypes = { 'azp', },
+        on_attach = function()
+            vim.bo.syn = 'yaml'
+        end,
         settings = {
             yaml = {
                 schemas = {

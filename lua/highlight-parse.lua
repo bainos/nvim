@@ -14,6 +14,7 @@ function M.setup()
             'vim',
             'yaml',
             'rust',
+            'go', -- maybe usfull also for helm templates
         },
     }
 end

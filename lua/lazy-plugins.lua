@@ -2,6 +2,7 @@ local M = {}
 
 function M.setup()
     local plugins = {
+        'LazyVim/LazyVim',
         -- common
         'ntpeters/vim-better-whitespace',
         'nvim-lua/plenary.nvim',
