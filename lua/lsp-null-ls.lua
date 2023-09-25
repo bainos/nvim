@@ -1,14 +1,21 @@
 local M = {}
 
 function M.setup()
-    local hostname = os.getenv 'HOST'
-        or os.getenv 'HOSTNAME'
-        or 'UNKOWN'
-
-    local null_servers = { 'shfmt', }
+    local hostname = require 'settings'.hostname
+    local null_servers = {}
 
     if string.find(hostname, 'farm-net') then
+        table.insert(null_servers, 'shfmt')
         table.insert(null_servers, 'prettierd') -- yaml
+    end
+
+    if string.find(hostname, 'archtab') then
+        table.insert(null_servers, 'shfmt')
+        table.insert(null_servers, 'prettierd') -- yaml
+    end
+
+    if string.find(hostname, '012') then
+        table.insert(null_servers, 'prettierd') -- js
     end
 
     -- language servers manager
@@ -32,7 +39,8 @@ function M.setup()
                 extra_args = { '-i', '2', '-ci', '-kp', '-s', },
                 filetypes = { 'bash', 'sh', 'zsh', },
             },
-            null_ls.builtins.formatting.prettierd.with { filetypes = { 'yaml', 'helm', 'k8s', 'azp', }, },
+            null_ls.builtins.formatting.prettierd.with { filetypes = { 'yaml', 'helm', 'k8s', 'azp', 'javascript',
+                'javascriptreact', }, },
         },
     }
 

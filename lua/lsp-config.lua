@@ -1,13 +1,11 @@
 local M = {}
 
 function M.setup()
-    local hostname = os.getenv 'HOST'
-        or os.getenv 'HOSTNAME'
-        or 'UNKOWN'
-
-    local lsp_servers = { 'bashls', }
+    local hostname = require 'settings'.hostname
+    local lsp_servers = {}
 
     if string.find(hostname, 'farm-net') then
+        table.insert(lsp_servers, 'bashls')
         table.insert(lsp_servers, 'lua_ls')
         table.insert(lsp_servers, 'rust_analyzer')
         table.insert(lsp_servers, 'dockerls')
@@ -19,8 +17,16 @@ function M.setup()
     end
 
     if string.find(hostname, 'archtab') then
+        table.insert(lsp_servers, 'bashls')
         table.insert(lsp_servers, 'lua_ls')
         table.insert(lsp_servers, 'rust_analyzer')
+    end
+
+    if string.find(hostname, '012') then
+        table.insert(lsp_servers, 'lua_ls')
+        table.insert(lsp_servers, 'html')
+        table.insert(lsp_servers, 'cssls')
+        table.insert(lsp_servers, 'volar')
     end
 
     -- language servers manager
@@ -49,7 +55,8 @@ function M.setup()
     require 'lspconfig'.pyright.setup {
         capabilities = capabilities,
         handlers = {
-            ['textDocument/publishDiagnostics'] = function(...) end,
+            ['textDocument/publishDiagnostics'] = function(...)
+            end,
         },
     }
 
@@ -197,6 +204,15 @@ function M.setup()
                 },
             },
         },
+    }
+
+    require 'lspconfig'.html.setup {
+        filetypes = { 'html', 'javascript', 'javascriptreact', 'javascript.jsx', 'typescript', 'typescriptreact',
+            'typescript.tsx', },
+    }
+    require 'lspconfig'.cssls.setup {}
+    require 'lspconfig'.volar.setup {
+        filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json', },
     }
 
     -- disable inline diagnostic message

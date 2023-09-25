@@ -1,14 +1,16 @@
 local M = {}
 
-function M.setup()
-    local home = os.getenv 'HOME'
-    local is_linux = true
-    if home == nil
-    then
-        home = os.getenv 'LOCALAPPDATA'
-        is_linux = false
-    end
+M.home = os.getenv 'HOME' or os.getenv 'LOCALAPPDATA'
 
+M.hostname = os.getenv 'HOST'
+    or os.getenv 'HOSTNAME'
+    or os.getenv 'COMPUTERNAME'
+    or 'UNKOWN'
+
+M.os_type = jit.os:lower()
+if os.getenv 'TERMUX_VERSION' then M.os_type = 'termux' end
+
+function M.setup()
     vim.g.mapleader = ','
     vim.g.maplocalleader = '\\'
 
@@ -17,7 +19,7 @@ function M.setup()
     vim.opt.backspace = 'indent,eol,start' -- backspace works on every char in insert mode
     vim.opt.completeopt = 'menu,menuone,noselect'
     vim.opt.history = 1000
-    if is_linux then vim.opt.dictionary = '/usr/share/dict/words' end
+    if M.os_type == 'linux' then vim.opt.dictionary = '/usr/share/dict/words' end
     vim.opt.startofline = true
     vim.opt.mouse       = nil
     -- fix '#' comment indentation
@@ -71,12 +73,12 @@ function M.setup()
     --vim.opt.expandtab = true -- expand tab to spaces
 
     -- Backup files
-    vim.opt.backup      = true                                 -- use backup files
+    vim.opt.backup      = true                                   -- use backup files
     vim.opt.writebackup = false
-    vim.opt.swapfile    = false                                -- do not use swap file
-    vim.opt.undodir     = home .. '/.config/nvim/tmp/undo//'   -- undo files
-    vim.opt.backupdir   = home .. '/.config/nvim/tmp/backup//' -- backups
-    vim.opt.directory   = '/.config/nvim/tmp/swap//'           -- swap files
+    vim.opt.swapfile    = false                                  -- do not use swap file
+    vim.opt.undodir     = M.home .. '/.config/nvim/tmp/undo//'   -- undo files
+    vim.opt.backupdir   = M.home .. '/.config/nvim/tmp/backup//' -- backups
+    vim.opt.directory   = M.home .. '/.config/nvim/tmp/swap//'   -- swap files
 
     --vim.cmd([[
     --au FileType python                  set ts=4 sw=4
@@ -87,6 +89,14 @@ function M.setup()
     vim.opt.wildmenu    = true -- on TAB, complete options for system command
     vim.opt.wildignore  =
     'deps,.svn,CVS,.git,.hg,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif,.DS_Store,*.aux,*.out,*.toc'
+
+    -- If the 'exrc' option is on (which is NOT the default), the current                                                                                                               │*
+    -- directory is searched for the following files, in order of precedence:                                                                                                           │E
+    -- - ".nvim.lua"                                                                                                                                                                    │>
+    -- - ".nvimrc"                                                                                                                                                                      │
+    -- - ".exrc"                                                                                                                                                                        │*
+    -- The first that exists is used, the others are ignored.
+    vim.o.exrc          = true
 
     -- Only show cursorline in the current window and in normal mode.
     vim.cmd [[

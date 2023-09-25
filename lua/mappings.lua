@@ -36,8 +36,6 @@ function M.setup()
     -- autocmd
     local function buf_format()
         vim.lsp.buf.format()
-        -- needs ntpeters/vim-better-whitespace plugin
-        vim.cmd ':StripWhitespace'
     end
 
     local api = vim.api
