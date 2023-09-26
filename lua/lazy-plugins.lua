@@ -1,43 +1,15 @@
 local M = {}
 
 function M.setup()
-    local hostname = require 'settings'.hostname
+    local hostname = require 'settings'.hostname()
     local plugins = {
         { 'folke/lazy.nvim',        version = '*', },
         -- common
-        'nvim-lua/plenary.nvim',
-        --{ 'ntpeters/vim-better-whitespace', lazy = false, },
-        {
-            'cappyzawa/trim.nvim',
-            opts = {
-                ft_blocklist = {},
-                patterns = {},
-                trim_on_write = false,
-                trim_trailing = true,
-                trim_last_line = false,
-                trim_first_line = true,
-            },
-        },
-        {
-            'folke/persistence.nvim',
-            event = 'BufReadPre', -- this will only start session saving when an actual file was opened
-            opts = {
-                -- add any custom options here
-            },
-        },
+        --'nvim-lua/plenary.nvim',
         { 'mg979/vim-visual-multi', lazy = false, },
-        -- As of Neovim 0.9, this plugin is no longer required. Instead run:
-        -- vim.loader.enable()
-        --'lewis6991/impatient.nvim',
-        --{
-        --'dstein64/vim-startuptime',
-        --cmd = 'StartupTime',
-        --config = function()
-        --vim.g.startuptime_tries = 10
-        --end,
-        --},
         {
             'folke/which-key.nvim',
+            lazy = false,
             config = function()
                 vim.o.timeout = true
                 vim.o.timeoutlen = 300
@@ -48,54 +20,60 @@ function M.setup()
                 }
             end,
         },
-        {
-            'nvim-lualine/lualine.nvim',
-            dependencies = { 'nvim-tree/nvim-web-devicons', },
-            opts = { theme = 'gruvebox-material', },
-            event = 'VeryLazy',
-        },
+        --{
+        --'nvim-lualine/lualine.nvim',
+        --dependencies = { 'nvim-tree/nvim-web-devicons', },
+        --opts = { theme = 'gruvebox-material', },
+        --event = 'VeryLazy',
+        --},
         -- general dev
-        'williamboman/mason.nvim',
         -- lsp-config
-        'neovim/nvim-lspconfig',
-        'williamboman/mason-lspconfig.nvim',
-        -- null-ls
-        'jose-elias-alvarez/null-ls.nvim',
-        'jay-babu/mason-null-ls.nvim',
-        -- -- completion
         {
-            'hrsh7th/nvim-cmp',
-            event = 'InsertEnter',
-            dependencies = {
-                'hrsh7th/cmp-nvim-lsp',
-                'hrsh7th/cmp-buffer',
-                'hrsh7th/cmp-path',
-                'hrsh7th/cmp-cmdline',
-                'saadparwaiz1/cmp_luasnip',
-            },
+            'williamboman/mason-lspconfig.nvim',
+            dependencies = { 'neovim/nvim-lspconfig', 'williamboman/mason.nvim', },
         },
+        -- mini
+        { 'echasnovski/mini.nvim',       version = '*', lazy = false, },
+        { 'echasnovski/mini.comment',    version = '*', lazy = false, },
+        { 'echasnovski/mini.completion', version = '*', event = 'InsertEnter', },
+        { 'echasnovski/mini.files',      version = '*', lazy = false, },
+        { 'echasnovski/mini.pairs',      version = '*', event = 'InsertEnter', },
+        { 'echasnovski/mini.sessions',   version = '*', lazy = false, },
+        { 'echasnovski/mini.statusline', version = '*', event = 'VeryLazy', },
+        { 'echasnovski/mini.surround',   version = '*', event = 'InsertEnter', },
+        { 'echasnovski/mini.trailspace', version = '*', lazy = false, },
+
+        -- -- completion
+        --{
+        --'hrsh7th/nvim-cmp',
+        --event = 'InsertEnter',
+        --dependencies = {
+        --'hrsh7th/cmp-nvim-lsp',
+        --'hrsh7th/cmp-buffer',
+        --'hrsh7th/cmp-path',
+        --'hrsh7th/cmp-cmdline',
+        --'saadparwaiz1/cmp_luasnip',
+        --},
+        --},
         -- Use <tab> for completion and snippets (supertab)
         -- first: disable default <tab> and <s-tab> behavior in LuaSnip
-        {
-            'L3MON4D3/LuaSnip',
-            --keys = function()
-            --return {}
-            --end,
-        },
-        -- -- highlighting
-        { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate', },
-        -- comments - <leader>c<space>
-        { 'scrooloose/nerdcommenter',        lazy = false, },
-        -- parens and quotes
-        'windwp/nvim-autopairs',
+        -- {
+        --     'L3MON4D3/LuaSnip',
+        --     --keys = function()
+        --     --return {}
+        --     --end,
+        -- },
         -- search - buffer/file browser
         {
             'nvim-telescope/telescope.nvim',
             dependencies = {
-                'nvim-lua/popup.nvim',
+                -- 'nvim-lua/popup.nvim',
                 'nvim-lua/plenary.nvim',
+                'nvim-tree/nvim-web-devicons',
             },
         },
+        -- -- highlighting
+        { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate', },
         -- themes
         {
             'ellisonleao/gruvbox.nvim',
@@ -115,13 +93,13 @@ function M.setup()
                 -- OPTIONAL:
                 --   `nvim-notify` is only needed, if you want to use the notification view.
                 --   If not available, we use `mini` as the fallback
-                'rcarriga/nvim-notify',
+                -- 'rcarriga/nvim-notify',
             },
         },
     }
 
     -- helm
-    if string.find(hostname, 'farm-net') then
+    if string.find(hostname, 'farm-net', 1, true) then
         table.insert(plugins, 'towolf/vim-helm')
     end
 
@@ -167,18 +145,34 @@ function M.setup()
     }
     require 'lazy'.setup(plugins, opts)
 
-    require 'lualine'.setup {
-        -- config
-    }
-    require 'flutter-tools'.setup {
-        -- config
-    }
-    require 'telescope'.setup {
-        -- config
-        defaults = {
-            file_ignore_patterns = { '.git', 'tmp', },
+    require 'mini.comment'.setup()
+    require 'mini.completion'.setup
+    {
+        delay = { completion = 200, info = 100, signature = 50, },
+
+        -- Way of how module does LSP completion
+        lsp_completion = {
+            source_func = 'omnifunc',
+            auto_setup = false,
         },
+
+        -- Module mappings. Use `''` (empty string) to disable one. Some of them
+        -- might conflict with system mappings.
+        mappings = {
+            force_twostep = '<C-Space>',  -- Force two-step completion
+            force_fallback = '<A-Space>', -- Force fallback completion
+        },
+
+        set_vim_settings = true,
     }
+    require 'mini.files'.setup()
+    require 'mini.fuzzy'.setup()
+    require 'mini.pairs'.setup()
+    require 'mini.sessions'.setup()
+    require 'mini.statusline'.setup()
+    require 'mini.surround'.setup()
+    require 'mini.trailspace'.setup()
+
     require 'noice'.setup {
         lsp = {
             -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
@@ -197,6 +191,12 @@ function M.setup()
             lsp_doc_border = false,       -- add a border to hover docs and signature help
         },
     }
+
+    if string.find(hostname, '012') then
+        require 'flutter-tools'.setup {
+            -- config
+        }
+    end
 end
 
 return M

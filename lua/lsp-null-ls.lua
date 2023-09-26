@@ -1,10 +1,10 @@
 local M = {}
 
 function M.setup()
-    local hostname = require 'settings'.hostname
+    local hostname = require 'settings'.hostname()
     local null_servers = {}
 
-    if string.find(hostname, 'farm-net') then
+    if string.find(hostname, 'farm-net', 1, true) then
         table.insert(null_servers, 'shfmt')
         table.insert(null_servers, 'prettierd') -- yaml
     end
@@ -39,8 +39,10 @@ function M.setup()
                 extra_args = { '-i', '2', '-ci', '-kp', '-s', },
                 filetypes = { 'bash', 'sh', 'zsh', },
             },
-            null_ls.builtins.formatting.prettierd.with { filetypes = { 'yaml', 'helm', 'k8s', 'azp', 'javascript',
-                'javascriptreact', }, },
+            null_ls.builtins.formatting.prettierd.with {
+                filetypes = { 'yaml', 'helm', 'k8s', 'azp', 'javascript',
+                    'javascriptreact', },
+            },
         },
     }
 

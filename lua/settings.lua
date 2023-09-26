@@ -1,14 +1,23 @@
 local M = {}
 
-M.home = os.getenv 'HOME' or os.getenv 'LOCALAPPDATA'
+function M.home()
+    return os.getenv 'HOME' or os.getenv 'LOCALAPPDATA'
+end
 
-M.hostname = os.getenv 'HOST'
-    or os.getenv 'HOSTNAME'
-    or os.getenv 'COMPUTERNAME'
-    or 'UNKOWN'
+function M.hostname()
+    return os.getenv 'HOST'
+        or os.getenv 'HOSTNAME'
+        or os.getenv 'COMPUTERNAME'
+        or 'UNKOWN'
+end
 
-M.os_type = jit.os:lower()
-if os.getenv 'TERMUX_VERSION' then M.os_type = 'termux' end
+function M.os_type()
+    if os.getenv 'TERMUX_VERSION' then
+        return 'termux'
+    else
+        return jit.os:lower()
+    end
+end
 
 function M.setup()
     vim.g.mapleader = ','
@@ -73,12 +82,12 @@ function M.setup()
     --vim.opt.expandtab = true -- expand tab to spaces
 
     -- Backup files
-    vim.opt.backup      = true                                   -- use backup files
+    vim.opt.backup      = true                                     -- use backup files
     vim.opt.writebackup = false
-    vim.opt.swapfile    = false                                  -- do not use swap file
-    vim.opt.undodir     = M.home .. '/.config/nvim/tmp/undo//'   -- undo files
-    vim.opt.backupdir   = M.home .. '/.config/nvim/tmp/backup//' -- backups
-    vim.opt.directory   = M.home .. '/.config/nvim/tmp/swap//'   -- swap files
+    vim.opt.swapfile    = false                                    -- do not use swap file
+    vim.opt.undodir     = M.home() .. '/.config/nvim/tmp/undo//'   -- undo files
+    vim.opt.backupdir   = M.home() .. '/.config/nvim/tmp/backup//' -- backups
+    vim.opt.directory   = M.home() .. '/.config/nvim/tmp/swap//'   -- swap files
 
     --vim.cmd([[
     --au FileType python                  set ts=4 sw=4
@@ -90,6 +99,7 @@ function M.setup()
     vim.opt.wildignore  =
     'deps,.svn,CVS,.git,.hg,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif,.DS_Store,*.aux,*.out,*.toc'
 
+    -- :help exrc
     -- If the 'exrc' option is on (which is NOT the default), the current                                                                                                               │*
     -- directory is searched for the following files, in order of precedence:                                                                                                           │E
     -- - ".nvim.lua"                                                                                                                                                                    │>

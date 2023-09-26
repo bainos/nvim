@@ -1,10 +1,10 @@
 local M = {}
 
 function M.setup()
-    local hostname = require 'settings'.hostname
+    local hostname = require 'settings'.hostname()
     local ts_languages = {}
 
-    if string.find(hostname, 'farm-net') then
+    if string.find(hostname, 'farm-net', 1,true) then
         table.insert(ts_languages, 'bash')
         table.insert(ts_languages, 'dockerfile')
         table.insert(ts_languages, 'python')
