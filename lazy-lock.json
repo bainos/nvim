@@ -1,4 +1,5 @@
 {
+  "flutter-tools.nvim": { "branch": "main", "commit": "0b01c71ecf05a2edd955b5b53d808bc64f143069" },
   "gruvbox.nvim": { "branch": "main", "commit": "08a551cc8140e6ca41b5de6cabf75d02a246c330" },
   "lazy.nvim": { "branch": "main", "commit": "3ad55ae678876516156cca2f361c51f7952a924b" },
   "mason-lspconfig.nvim": { "branch": "main", "commit": "2451adb9bdb0fd32140bf3aa8dbc17ff60050db3" },
@@ -19,7 +20,6 @@
   "nvim-web-devicons": { "branch": "master", "commit": "45d0237c427baba8cd05e0ab26d30e2ee58c2c82" },
   "plenary.nvim": { "branch": "master", "commit": "9ce85b0f7dcfe5358c0be937ad23e456907d410b" },
   "telescope.nvim": { "branch": "master", "commit": "ed9574dd6dde143d009b2528ea6d79bd34bbe6c8" },
-  "vim-helm": { "branch": "master", "commit": "c2e7b85711d410e1d73e64eb5df7b70b1c4c10eb" },
   "vim-visual-multi": { "branch": "master", "commit": "724bd53adfbaf32e129b001658b45d4c5c29ca1a" },
   "which-key.nvim": { "branch": "main", "commit": "7ccf476ebe0445a741b64e36c78a682c1c6118b7" }
 }

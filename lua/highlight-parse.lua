@@ -28,6 +28,7 @@ function M.setup()
         table.insert(ts_languages, 'xml')
         table.insert(ts_languages, 'html')
         table.insert(ts_languages, 'css')
+        table.insert(ts_languages, 'javascript')
     end
 
     require 'nvim-treesitter.configs'.setup {

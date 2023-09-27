@@ -168,7 +168,14 @@ function M.setup()
     require 'mini.files'.setup()
     require 'mini.fuzzy'.setup()
     require 'mini.pairs'.setup()
-    require 'mini.sessions'.setup()
+    require 'mini.sessions'.setup {
+        -- Whether to read latest session if Neovim opened without file arguments
+        autoread = false,
+        -- Whether to write current session before quitting Neovim
+        autowrite = true,
+        directory = 'session',
+        file = 'Session.vim',
+    }
     require 'mini.statusline'.setup()
     require 'mini.surround'.setup()
     require 'mini.trailspace'.setup()

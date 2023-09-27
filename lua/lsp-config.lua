@@ -67,6 +67,11 @@ function M.setup()
                     filter = function(attached_client)
                         return attached_client.name ~= ''
                     end,
+                    tabsSize = 4,
+                    insertSpaces = true,
+                    trimTrailingWhitespace = true,
+                    insertFinalNewline = true,
+                    trimFinalNewlines = true,
                 }
                 ---@diagnostic disable-next-line: param-type-mismatch
                 vim.fn.winrestview(view)
