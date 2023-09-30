@@ -12,6 +12,9 @@ function M.setup()
     local cmp = require 'cmp'
 
     cmp.setup {
+        completion = {
+            autocomplete = false,
+        },
         snippet = {
             -- REQUIRED - you must specify a snippet engine
             expand = function(args)
@@ -23,6 +26,9 @@ function M.setup()
             --documentation = cmp.config.window.bordered(),
         },
         mapping = {
+            ['<C-n>'] = cmp.mapping {
+                i = cmp.mapping.complete(),
+            },
             ['<Tab>'] = cmp.mapping(function(fallback)
                 if cmp.visible() then
                     cmp.select_next_item()
@@ -78,15 +84,6 @@ function M.setup()
             { name = 'cmdline', },
         }),
     })
-
-    -- autopairs
-    require 'nvim-autopairs'.setup {}
-    -- If you want insert `(` after select function or method item
-    local cmp_autopairs = require 'nvim-autopairs.completion.cmp'
-    cmp.event:on(
-        'confirm_done',
-        cmp_autopairs.on_confirm_done()
-    )
 end
 
 return M

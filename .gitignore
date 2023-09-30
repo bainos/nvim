@@ -9,6 +9,10 @@
 # VIM Session
 Session.vim
 Sessionx.vim
+.session.vim
+
+# NVIM Log
+nvimlog
 
 # VIM Temporary
 .netrwhist

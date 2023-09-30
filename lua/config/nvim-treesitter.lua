@@ -1,10 +1,10 @@
 local M = {}
 
 function M.setup()
-    local hostname = require 'settings'.hostname
-    local ts_languages = {}
+    local hostname = require 'settings'.hostname()
+    local ts_languages = { 'regex', }
 
-    if string.find(hostname, 'farm-net') then
+    if string.find(hostname, 'farm-net', 1, true) then
         table.insert(ts_languages, 'bash')
         table.insert(ts_languages, 'dockerfile')
         table.insert(ts_languages, 'python')
@@ -25,9 +25,10 @@ function M.setup()
     if string.find(hostname, '012') then
         table.insert(ts_languages, 'lua')
         table.insert(ts_languages, 'dart')
-        table.insert(ts_languages, 'xml')
+        -- table.insert(ts_languages, 'xml')
         table.insert(ts_languages, 'html')
         table.insert(ts_languages, 'css')
+        table.insert(ts_languages, 'javascript')
     end
 
     require 'nvim-treesitter.configs'.setup {

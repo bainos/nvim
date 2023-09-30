@@ -21,11 +21,7 @@ function M.setup()
         transparent_mode = false,
     }
     vim.opt.background = 'dark' -- or "light" for light mode
-    if require 'termux'.is_termux() then
-        vim.cmd [[colorscheme gruvbox]]
-    else
-        vim.cmd [[colorscheme gruvbox]]
-    end
+    vim.cmd [[colorscheme gruvbox]]
 end
 
 return M

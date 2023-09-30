@@ -1,0 +1,124 @@
+local M = {}
+
+function M.setup()
+    local hostname = require 'settings'.hostname()
+    local plugins = {
+        { 'folke/lazy.nvim',             version = '*', },
+        { 'echasnovski/mini.nvim',       version = '*',   lazy = false, },
+        { 'echasnovski/mini.comment',    version = '*',   lazy = false, },
+        { 'echasnovski/mini.files',      version = '*',   lazy = false, },
+        { 'echasnovski/mini.pairs',      version = '*',   event = 'InsertEnter', },
+        { 'echasnovski/mini.sessions',   version = '*',   lazy = false, },
+        { 'echasnovski/mini.statusline', version = '*',   event = 'VeryLazy', },
+        { 'echasnovski/mini.surround',   version = '*',   event = 'InsertEnter', },
+        { 'echasnovski/mini.tabline',    version = '*',   lazy = false, },
+        { 'echasnovski/mini.trailspace', version = '*',   lazy = false, },
+        { 'mg979/vim-visual-multi',      lazy = false, },
+        { 'ellisonleao/gruvbox.nvim',    priority = 1000, },
+        {
+            'folke/which-key.nvim',
+            lazy = false,
+            config = function()
+                vim.o.timeout = true
+                vim.o.timeoutlen = 300
+                require 'which-key'.setup()
+            end,
+        },
+        {
+            'folke/noice.nvim',
+            event = 'VeryLazy',
+            opts = {},
+            dependencies = {
+                'MunifTanjim/nui.nvim', 'rcarriga/nvim-notify', },
+        },
+        {
+            'nvim-telescope/telescope.nvim',
+            dependencies = {
+                'nvim-lua/plenary.nvim',
+                'nvim-tree/nvim-web-devicons',
+            },
+        },
+        -- -- highlighting
+        { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate', tag = 'v0.9.1', },
+        {
+            'williamboman/mason-lspconfig.nvim',
+            dependencies = { 'neovim/nvim-lspconfig', 'williamboman/mason.nvim', },
+        },
+        -- -- completion
+        {
+            'hrsh7th/nvim-cmp',
+            event = 'InsertEnter',
+            dependencies = {
+                'hrsh7th/cmp-nvim-lsp',
+                'hrsh7th/cmp-buffer',
+                'hrsh7th/cmp-path',
+                'hrsh7th/cmp-cmdline',
+                'saadparwaiz1/cmp_luasnip',
+                'L3MON4D3/LuaSnip',
+            },
+        },
+    }
+
+    -- helm
+    if string.find(hostname, 'farm-net', 1, true) then
+        table.insert(plugins, 'towolf/vim-helm')
+    end
+
+    -- Flutter/Dart
+    if string.find(hostname, '012') then
+        table.insert(plugins, {
+            'akinsho/flutter-tools.nvim',
+            --lazy = false,
+            dependencies = {
+                'nvim-lua/plenary.nvim',
+            },
+            config = true,
+        })
+    end
+
+    local opts = {
+        defaults = {
+            lazy = true,
+            version = false,           -- always use the latest git commit
+        },
+        checker = { enabled = true, }, -- automatically check for plugin updates
+        performance = {
+            rtp = {
+                -- disable some rtp plugins
+                disabled_plugins = {
+                    'gzip',
+                    'matchit',
+                    'matchparen',
+                    'netrwPlugin',
+                    'tarPlugin',
+                    'tohtml',
+                    'tutor',
+                    'zipPlugin',
+                },
+            },
+        },
+    }
+
+    require 'lazy'.setup(plugins, opts)
+    require 'mini.comment'.setup()
+
+    require 'mini.files'.setup()
+    require 'mini.pairs'.setup()
+    require 'mini.sessions'.setup {
+        autoread = true,
+        autowrite = true,
+        directory = '',
+        file = '.session.vim',
+    }
+    require 'mini.statusline'.setup()
+    require 'mini.surround'.setup()
+    require 'mini.trailspace'.setup()
+    require 'mini.tabline'.setup()
+    ---@diagnostic disable-next-line: undefined-field
+    require 'notify'.setup {
+        stages = 'static',
+        render = 'minimal',
+    }
+end
+
+return M
