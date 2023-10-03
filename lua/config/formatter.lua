@@ -6,7 +6,7 @@ function M.setup()
 
     if string.find(hostname, 'farm-net', 1, true) then
         table.insert(formatters, 'shfmt')
-        table.insert(formatters, 'prettierd') -- yaml
+        table.insert(formatters, 'prettier') -- yaml
     end
 
     if string.find(hostname, 'archtab') then
@@ -14,7 +14,7 @@ function M.setup()
     end
 
     if string.find(hostname, '012') then
-        table.insert(formatters, 'prettierd') -- js
+        table.insert(formatters, 'prettier') -- js
     end
 
     require 'mason-tool-installer'.setup {
@@ -32,6 +32,10 @@ function M.setup()
                 or vim.bo.filetype == 'bash'
                 or vim.bo.filetype == 'zsh' then
                 vim.cmd(':! shfmt -i 2 -ci -kp -s -w ' .. file_name)
+            elseif vim.bo.filetype == 'javascript'
+                or vim.bo.filetype == 'javascriptreact'
+                or vim.bo.filetype == 'yaml' then
+                vim.cmd(':! prettier --write --single-quote --jsx-single-quote ' .. file_name)
             else
                 vim.lsp.buf.format()
             end
