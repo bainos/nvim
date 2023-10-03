@@ -3,7 +3,6 @@ local M = {}
 function M.setup()
     local hostname = require 'settings'.hostname()
     local lsp_servers = {}
-    local lsp_linters = {}
 
     if string.find(hostname, 'farm-net', 1, true) then
         table.insert(lsp_servers, 'bashls')
@@ -16,17 +15,12 @@ function M.setup()
         table.insert(lsp_servers, 'pyright')
         table.insert(lsp_servers, 'yamlls')
         table.insert(lsp_servers, 'marksman')
-        -- formatters
-        table.insert(lsp_linters, 'shfmt')
-        table.insert(lsp_linters, 'prettierd') -- yaml
     end
 
     if string.find(hostname, 'archtab') then
         table.insert(lsp_servers, 'bashls')
         table.insert(lsp_servers, 'lua_ls')
         table.insert(lsp_servers, 'rust_analyzer')
-        -- formatters
-        table.insert(lsp_linters, 'shfmt')
     end
 
     if string.find(hostname, '012') then
@@ -34,12 +28,8 @@ function M.setup()
         table.insert(lsp_servers, 'html')
         table.insert(lsp_servers, 'cssls')
         table.insert(lsp_servers, 'volar')
-        -- formatters
-        table.insert(lsp_linters, 'prettierd') -- js
     end
 
-    -- language servers manager
-    require 'mason'.setup {}
     require 'mason-lspconfig'.setup {
         ensure_installed = lsp_servers,
         automatic_installation = false,
@@ -158,9 +148,7 @@ function M.setup()
             },
         },
         html = {
-            filetypes = { 'html', 'javascript', 'javascriptreact', 'javascript.jsx', 'typescript',
-                'typescriptreact',
-                'typescript.tsx', },
+            filetypes = { 'html', },
         },
         volar = {
             filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json', },

@@ -40,10 +40,13 @@ function M.setup()
         },
         -- -- highlighting
         { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate', tag = 'v0.9.1', },
+        -- -- LSP
+        { 'neovim/nvim-lspconfig', },
         {
-            'williamboman/mason-lspconfig.nvim',
-            dependencies = { 'neovim/nvim-lspconfig', 'williamboman/mason.nvim', },
+            'williamboman/mason.nvim',
+            dependencies = { 'williamboman/mason-lspconfig.nvim', },
         },
+        { 'WhoIsSethDaniel/mason-tool-installer.nvim', },
         -- -- completion
         {
             'hrsh7th/nvim-cmp',
@@ -100,8 +103,9 @@ function M.setup()
     }
 
     require 'lazy'.setup(plugins, opts)
-    require 'mini.comment'.setup()
+    require 'mason'.setup()
 
+    require 'mini.comment'.setup()
     require 'mini.files'.setup()
     require 'mini.pairs'.setup()
     require 'mini.sessions'.setup {
@@ -114,6 +118,7 @@ function M.setup()
     require 'mini.surround'.setup()
     require 'mini.trailspace'.setup()
     require 'mini.tabline'.setup()
+
     ---@diagnostic disable-next-line: undefined-field
     require 'notify'.setup {
         stages = 'static',
