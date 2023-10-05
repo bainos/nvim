@@ -8,8 +8,10 @@ function M.setup()
         {
             pattern = { '*.yml', },
             callback = function()
-                api.nvim_buf_set_option(0, 'filetype', 'azp')
+                api.nvim_set_option_value('filetype', 'azp', { buf = 0, })
                 vim.cmd ':set syn=yaml'
+                vim.cmd ':set comments=:#'
+                vim.cmd ':set commentstring=#\\ %s'
             end,
         }
     )
@@ -18,8 +20,10 @@ function M.setup()
         {
             pattern = { '*/manifests/*.yaml', '*/resources/*.yaml', },
             callback = function()
-                api.nvim_buf_set_option(0, 'filetype', 'k8s')
+                api.nvim_set_option_value('filetype', 'k8s', { buf = 0, })
                 vim.cmd ':set syn=yaml'
+                vim.cmd ':set comments=:#'
+                vim.cmd ':set commentstring=#\\ %s'
             end,
         }
     )
@@ -28,8 +32,10 @@ function M.setup()
         {
             pattern = { '*/templates/*.yaml', '*/templates/*.tpl', 'values.yaml', 'values*.yaml', },
             callback = function()
-                api.nvim_buf_set_option(0, 'filetype', 'helm')
+                api.nvim_set_option_value('filetype', 'helm', { buf = 0, })
                 vim.cmd ':set syn=yaml'
+                vim.cmd ':set comments=:#'
+                vim.cmd ':set commentstring=#\\ %s'
             end,
         }
     )

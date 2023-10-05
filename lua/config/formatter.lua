@@ -24,24 +24,38 @@ function M.setup()
         start_delay = 3000,
         debounce_hours = 5,
     }
+end
 
-    vim.api.nvim_create_user_command('Format',
-        function()
-            local file_name = vim.api.nvim_buf_get_name(0)
-            if vim.bo.filetype == 'sh'
-                or vim.bo.filetype == 'bash'
-                or vim.bo.filetype == 'zsh' then
-                vim.cmd(':! shfmt -i 2 -ci -kp -s -w ' .. file_name)
-            elseif vim.bo.filetype == 'javascript'
-                or vim.bo.filetype == 'javascriptreact'
-                or vim.bo.filetype == 'yaml' then
-                vim.cmd(':! prettier --write --single-quote --jsx-single-quote ' .. file_name)
-            else
-                vim.lsp.buf.format()
-            end
-        end,
-        { nargs = '?', }
-    )
+local function shfmt(file_path)
+    vim.cmd(':! shfmt -i 2 -ci -kp -s -w ' .. file_path)
+end
+
+local prettierrc = vim.fn.stdpath 'config' .. '/prettierrc'
+local function prettier(file_path)
+    vim.cmd(':! prettier --write --config ' .. prettierrc .. ' ' .. file_path)
+end
+
+local custom_formatters = {
+    sh = shfmt,
+    bash = shfmt,
+    zsh = shfmt,
+    javascript = prettier,
+    markdown = prettier,
+    javascriptreact = prettier,
+    k8s = prettier,
+    helm = prettier,
+    yaml = prettier,
+}
+
+function M.buf_format()
+    print('Formatting ', vim.bo.filetype, ': ', vim.api.nvim_buf_get_name(0))
+    if custom_formatters[vim.bo.filetype] then
+        custom_formatters[vim.bo.filetype](vim.api.nvim_buf_get_name(0))
+        vim.cmd ':lua MiniTrailspace.trim()'
+        vim.cmd ':lua MiniTrailspace.trim_last_lines()'
+    else
+        vim.lsp.buf.format()
+    end
 end
 
 return M

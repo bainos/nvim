@@ -6,7 +6,11 @@ function M.setup()
 
     -- code actions
     vim.keymap.set('n', '<Leader>a', vim.lsp.buf.code_action, opts)
-    vim.keymap.set('n', '<Leader>fr', function() vim.lsp.buf.format { async = true, } end, opts)
+
+    -- formatter
+    local formatter = require 'config.formatter'
+    vim.api.nvim_create_user_command('Format', formatter.buf_format, { nargs = '?', })
+    vim.keymap.set('n', '<Leader>fr', formatter.buf_format, opts)
 
     -- search
     vim.keymap.set('n', '<C-b>', ':noh<cr>:call clearmatches()<cr>', { desc = 'clear search matches', })
@@ -35,19 +39,14 @@ function M.setup()
     vim.keymap.set('n', '<Leader>fm', ':lua MiniFiles.open()<cr>', { desc = 'file browser', })
     vim.keymap.set('n', '<Leader>fn', ':Telescope notify<cr>', { desc = 'show notifications', })
 
-    local mksession = function(item)
-        if item == 'yes' then
-            vim.cmd ':mksession .session.vim!<CR>'
-        end
-    end
-
     local save_session = function()
-        vim.ui.select({ 'yes', 'cancel', }, { prompt = 'Create session in ' .. vim.loop.cwd(), mksession = mksession, },
-            function(item)
-                if item == 'yes' then
-                    require 'notify' ('session saved: ' .. vim.loop.cwd() .. '/.session.vim')
-                end
-            end)
+        vim.ui.input({ prompt = 'Create session in ' .. vim.fn.getcwd() .. '?', },
+            function(input)
+                if input == nil then return end
+                vim.cmd ':mksession! .session.vim'
+                print('session saved: ' .. vim.fn.getcwd() .. '/.session.vim')
+            end
+        )
     end
 
     vim.keymap.set('n', '<Leader>s', save_session, { desc = 'mksession', })
@@ -55,15 +54,11 @@ function M.setup()
     vim.keymap.set('n', '<Leader>bp', ':bprevious<cr>', { desc = 'next buf', })
 
     -- autocmd
-    local function buf_format()
-        vim.lsp.buf.format()
-    end
-
     local api = vim.api
     api.nvim_create_autocmd(
         { 'BufWritePre', },
         --{ command = 'lua vim.lsp.buf.format()' }
-        { callback = buf_format, }
+        { callback = formatter.buf_format, }
     )
 end
 
