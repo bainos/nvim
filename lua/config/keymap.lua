@@ -8,7 +8,7 @@ function M.setup()
     vim.keymap.set('n', '<Leader>a', vim.lsp.buf.code_action, opts)
 
     -- formatter
-    local formatter = require 'config.formatter'
+    local formatter = require 'plugins.b_formatter'
     vim.api.nvim_create_user_command('Format', formatter.buf_format, { nargs = '?', })
     vim.keymap.set('n', '<Leader>fr', formatter.buf_format, opts)
 
@@ -39,19 +39,12 @@ function M.setup()
     vim.keymap.set('n', '<Leader>fm', ':lua MiniFiles.open()<cr>', { desc = 'file browser', })
     vim.keymap.set('n', '<Leader>fn', ':Telescope notify<cr>', { desc = 'show notifications', })
 
-    local save_session = function()
-        vim.ui.input({ prompt = 'Create session in ' .. vim.fn.getcwd() .. '?', },
-            function(input)
-                if input == nil then return end
-                vim.cmd ':mksession! .session.vim'
-                print('session saved: ' .. vim.fn.getcwd() .. '/.session.vim')
-            end
-        )
-    end
-
-    vim.keymap.set('n', '<Leader>s', save_session, { desc = 'mksession', })
     vim.keymap.set('n', '<Leader>bn', ':bnext<cr>', { desc = 'next buf', })
     vim.keymap.set('n', '<Leader>bp', ':bprevious<cr>', { desc = 'next buf', })
+
+    -- session
+    local b_session = require 'plugins.b_session'
+    vim.keymap.set('n', '<Leader>ss', b_session.save, { desc = 'save session', })
 
     -- autocmd
     local api = vim.api

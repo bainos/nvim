@@ -8,7 +8,6 @@ function M.setup()
         { 'echasnovski/mini.comment',    version = '*',   lazy = false, },
         { 'echasnovski/mini.files',      version = '*',   lazy = false, },
         { 'echasnovski/mini.pairs',      version = '*',   event = 'InsertEnter', },
-        { 'echasnovski/mini.sessions',   version = '*',   lazy = false, },
         { 'echasnovski/mini.statusline', version = '*',   event = 'VeryLazy', },
         { 'echasnovski/mini.surround',   version = '*',   event = 'InsertEnter', },
         { 'echasnovski/mini.tabline',    version = '*',   lazy = false, },
@@ -24,7 +23,7 @@ function M.setup()
                 require 'which-key'.setup()
             end,
         },
-        { 'rcarriga/nvim-notify', },
+        -- { 'rcarriga/nvim-notify', },
         -- {
         --     'folke/noice.nvim',
         --     event = 'VeryLazy',
@@ -109,22 +108,21 @@ function M.setup()
     require 'mini.comment'.setup()
     require 'mini.files'.setup()
     require 'mini.pairs'.setup()
-    require 'mini.sessions'.setup {
-        autoread = true,
-        autowrite = true,
-        directory = '',
-        file = '.session.vim',
-    }
     require 'mini.statusline'.setup()
     require 'mini.surround'.setup()
     require 'mini.trailspace'.setup()
     require 'mini.tabline'.setup()
 
     ---@diagnostic disable-next-line: undefined-field
-    require 'notify'.setup {
-        stages = 'static',
-        render = 'minimal',
-    }
+    -- require 'notify'.setup {
+    --     stages = 'static',
+    --     render = 'minimal',
+    -- }
+
+    -- b_plugins
+    require 'plugins.b_custom_filetypes'.setup()
+    require 'plugins.b_formatter'.setup()
+    require 'plugins.b_session'.setup()
 end
 
 return M

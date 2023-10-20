@@ -27,12 +27,14 @@ function M.setup()
 end
 
 local function shfmt(file_path)
-    vim.cmd(':! shfmt -i 2 -ci -kp -s -w ' .. file_path)
+    -- vim.cmd(':! shfmt -i 2 -ci -kp -s -w ' .. file_path)
+    vim.fn.system('shfmt -i 2 -ci -kp -s -w ' .. file_path)
 end
 
 local prettierrc = vim.fn.stdpath 'config' .. '/prettierrc'
 local function prettier(file_path)
-    vim.cmd(':! prettier --write --config ' .. prettierrc .. ' ' .. file_path)
+    -- vim.cmd(':! prettier --write --config ' .. prettierrc .. ' ' .. file_path)
+    vim.fn.system('prettier --write --config ' .. prettierrc .. ' ' .. file_path)
 end
 
 local custom_formatters = {
