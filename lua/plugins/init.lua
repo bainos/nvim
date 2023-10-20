@@ -24,13 +24,14 @@ function M.setup()
                 require 'which-key'.setup()
             end,
         },
-        {
-            'folke/noice.nvim',
-            event = 'VeryLazy',
-            opts = {},
-            dependencies = {
-                'MunifTanjim/nui.nvim', 'rcarriga/nvim-notify', },
-        },
+        { 'rcarriga/nvim-notify', },
+        -- {
+        --     'folke/noice.nvim',
+        --     event = 'VeryLazy',
+        --     opts = {},
+        --     dependencies = {
+        --         'MunifTanjim/nui.nvim', 'rcarriga/nvim-notify', },
+        -- },
         {
             'nvim-telescope/telescope.nvim',
             dependencies = {
