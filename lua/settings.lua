@@ -23,6 +23,8 @@ function M.setup()
     vim.g.mapleader = ','
     vim.g.maplocalleader = '\\'
 
+    vim.opt.mouse = ''
+
     -- theme
     vim.opt.termguicolors = true
     vim.opt.background = 'dark' -- or "light" for light mode
