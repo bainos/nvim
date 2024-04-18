@@ -28,7 +28,7 @@ end
 
 local function shfmt(file_path)
     -- vim.cmd(':! shfmt -i 2 -ci -kp -s -w ' .. file_path)
-    vim.fn.system('shfmt -i 2 -ci -kp -s -w ' .. file_path)
+    vim.fn.system('shfmt -i 2 -ci -bn -s -w ' .. file_path)
 end
 
 local prettierrc = vim.fn.stdpath 'config' .. '/prettierrc'
@@ -50,6 +50,7 @@ local custom_formatters = {
 }
 
 function M.buf_format()
+    vim.cmd ':w!'
     print('Formatting ', vim.bo.filetype, ': ', vim.api.nvim_buf_get_name(0))
     if custom_formatters[vim.bo.filetype] then
         custom_formatters[vim.bo.filetype](vim.api.nvim_buf_get_name(0))
@@ -58,6 +59,8 @@ function M.buf_format()
     else
         vim.lsp.buf.format()
     end
+    vim.cmd ':e'
+    vim.cmd ':w!'
 end
 
 return M

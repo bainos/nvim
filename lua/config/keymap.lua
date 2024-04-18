@@ -47,12 +47,12 @@ function M.setup()
     vim.keymap.set('n', '<Leader>ss', b_session.save, { desc = 'save session', })
 
     -- autocmd
-    local api = vim.api
-    api.nvim_create_autocmd(
-        { 'BufWritePre', },
-        --{ command = 'lua vim.lsp.buf.format()' }
-        { callback = formatter.buf_format, }
-    )
+    -- local api = vim.api
+    -- api.nvim_create_autocmd(
+    --     { 'BufWritePre', },
+    --     --{ command = 'lua vim.lsp.buf.format()' }
+    --     { callback = formatter.buf_format, }
+    -- )
 end
 
 return M

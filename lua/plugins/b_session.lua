@@ -18,7 +18,7 @@ function file_exists(file_path)
 end
 
 function M.save()
-    vim.ui.input({ prompt = 'Create session in ' .. vim.fn.getcwd() .. '?', },
+    vim.ui.input({ prompt = 'Create session in ' .. vim.fn.getcwd() .. '? ', },
         function(input)
             if input == nil then return end
             vim.cmd ':mksession! .session.vim'

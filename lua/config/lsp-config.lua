@@ -37,7 +37,9 @@ function M.setup()
 
     local diagnostic_config = {
         signs = {
-            severity_limit = 'Warning',
+            -- DEPRECATED 2024-03-27
+            -- severity_limit = 'Warning',
+            min = 'Warning',
         },
         underline = true,
         virtual_text = false,
