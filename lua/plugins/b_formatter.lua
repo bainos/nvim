@@ -50,17 +50,17 @@ local custom_formatters = {
 }
 
 function M.buf_format()
-    vim.cmd ':w!'
     print('Formatting ', vim.bo.filetype, ': ', vim.api.nvim_buf_get_name(0))
     if custom_formatters[vim.bo.filetype] then
+        vim.cmd ':w!'
         custom_formatters[vim.bo.filetype](vim.api.nvim_buf_get_name(0))
         vim.cmd ':lua MiniTrailspace.trim()'
         vim.cmd ':lua MiniTrailspace.trim_last_lines()'
+        vim.cmd ':e!'
+        -- vim.cmd ':w!'
     else
         vim.lsp.buf.format()
     end
-    vim.cmd ':e'
-    vim.cmd ':w!'
 end
 
 return M
