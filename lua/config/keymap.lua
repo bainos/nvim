@@ -11,6 +11,7 @@ function M.setup()
     local formatter = require 'plugins.b_formatter'
     vim.api.nvim_create_user_command('Format', formatter.buf_format, { nargs = '?', })
     vim.keymap.set('n', '<Leader>fr', formatter.buf_format, opts)
+    vim.keymap.set('n', '<Leader>tr', ':lua MiniTrailspace.trim()<cr>', opts)
 
     -- search
     vim.keymap.set('n', '<C-b>', ':noh<cr>:call clearmatches()<cr>', { desc = 'clear search matches', })
