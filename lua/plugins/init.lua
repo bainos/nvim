@@ -106,7 +106,23 @@ function M.setup()
     require 'mason'.setup()
 
     require 'mini.comment'.setup()
-    require 'mini.files'.setup()
+    require 'mini.files'.setup
+    {
+        mappings = {
+            close       = 'q',
+            go_in       = '<Right>',
+            go_in_plus  = 'L',
+            go_out      = '<Left>',
+            go_out_plus = 'H',
+            reset       = '<BS>',
+            reveal_cwd  = '@',
+            show_help   = 'g?',
+            synchronize = '=',
+            trim_left   = '<',
+            trim_right  = '>',
+        },
+    }
+
     require 'mini.pairs'.setup()
     require 'mini.statusline'.setup()
     require 'mini.surround'.setup()
