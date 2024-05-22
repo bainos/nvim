@@ -7,9 +7,9 @@ function M.setup()
         { 'echasnovski/mini.nvim',       version = '*',   lazy = false, },
         { 'echasnovski/mini.comment',    version = '*',   lazy = false, },
         { 'echasnovski/mini.files',      version = '*',   lazy = false, },
-        { 'echasnovski/mini.pairs',      version = '*',   event = 'InsertEnter', },
+        -- { 'echasnovski/mini.pairs',      version = '*',   event = 'InsertEnter', },
         { 'echasnovski/mini.statusline', version = '*',   event = 'VeryLazy', },
-        { 'echasnovski/mini.surround',   version = '*',   event = 'InsertEnter', },
+        -- { 'echasnovski/mini.surround',   version = '*',   event = 'InsertEnter', },
         { 'echasnovski/mini.tabline',    version = '*',   lazy = false, },
         { 'echasnovski/mini.trailspace', version = '*',   lazy = false, },
         { 'mg979/vim-visual-multi',      lazy = false, },
@@ -39,7 +39,33 @@ function M.setup()
             },
         },
         -- -- highlighting
-        { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate', tag = 'v0.9.1', },
+        {
+            'andymass/vim-matchup',
+            lazy = false,
+            config = function()
+                vim.g.matchup_matchparen_offscreen = { method = 'popup', }
+            end,
+        },
+        {
+            'nvim-treesitter/nvim-treesitter',
+            dependencies = { 'andymass/vim-matchup', },
+            build = ':TSUpdate',
+            config = function()
+                local configs = require 'nvim-treesitter.configs'
+                configs.setup {
+                    modules = {},
+                    ignore_install = {},
+                    auto_install = true,
+                    ensure_installed = { 'bash', 'lua', 'vim', 'vimdoc', 'rust', 'yaml', 'python', 'hcl', 'markdown', },
+                    sync_install = true,
+                    highlight = { enable = true, },
+                    indent = { enable = true, },
+                    matchup = {
+                        enable = true, -- mandatory, false will disable the whole extension
+                    },
+                }
+            end,
+        },
         -- -- LSP
         { 'neovim/nvim-lspconfig', },
         {
@@ -60,6 +86,19 @@ function M.setup()
                 'L3MON4D3/LuaSnip',
             },
         },
+        -- {
+        --     'hedyhli/outline.nvim',
+        --     lazy = true,
+        --     cmd = { 'Outline', 'OutlineOpen', },
+        --     keys = { -- Example mapping to toggle outline
+        --         { '<leader>o', '<cmd>Outline<CR>', desc = 'Toggle outline', },
+        --
+        --     },
+        --
+        --     opts = {
+        --         -- Your setup opts here
+        --     },
+        -- },
     }
 
     -- helm
@@ -123,11 +162,17 @@ function M.setup()
         },
     }
 
-    require 'mini.pairs'.setup()
+    -- require 'mini.pairs'.setup()
     require 'mini.statusline'.setup()
     require 'mini.surround'.setup()
     require 'mini.trailspace'.setup()
     require 'mini.tabline'.setup()
+
+    -- require 'nvim-treesitter.configs'.setup {
+    --     matchup = {
+    --         enable = true,     -- mandatory, false will disable the whole extension
+    --     },
+    -- }
 
     ---@diagnostic disable-next-line: undefined-field
     -- require 'notify'.setup {

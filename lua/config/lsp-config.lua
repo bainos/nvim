@@ -110,6 +110,7 @@ function M.setup()
                 },
                 yaml = {
                     schemas = { kubernetes = '/*.yaml', },
+                    schemaStore = { enable = true },
                 },
                 schemaDownload = { enable = true, },
                 validate = true,
