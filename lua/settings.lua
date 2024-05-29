@@ -28,6 +28,7 @@ function M.setup()
     -- theme
     vim.opt.termguicolors = true
     vim.opt.background = 'dark' -- or "light" for light mode
+    -- vim.opt.guicursor = "n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20"
 
     -- basic settings
     vim.opt.encoding = 'utf-8'
@@ -115,15 +116,15 @@ function M.setup()
     vim.o.exrc          = true
 
     -- Only show cursorline in the current window and in normal mode.
-    vim.cmd [[
-    augroup cline
-        au!
-        au WinLeave * set nocursorline
-        au WinEnter * set cursorline
-        au InsertEnter * set nocursorline
-        au InsertLeave * set cursorline
-    augroup END
-  ]]
+  --   vim.cmd [[
+  --   augroup cline
+  --       au!
+  --       au WinLeave * set nocursorline
+  --       au WinEnter * set cursorline
+  --       au InsertEnter * set nocursorline
+  --       au InsertLeave * set cursorline
+  --   augroup END
+  --   ]]
 end
 
 return M

@@ -66,6 +66,7 @@ function M.setup()
                 }
             end,
         },
+        { 'rasulomaroff/reactive.nvim', },
         -- -- LSP
         { 'neovim/nvim-lspconfig', },
         {
@@ -168,6 +169,13 @@ function M.setup()
     require 'mini.trailspace'.setup()
     require 'mini.tabline'.setup()
 
+    require 'reactive'.setup {
+        builtin = {
+            cursorline = true,
+            cursor = true,
+            modemsg = true,
+        },
+    }
     -- require 'nvim-treesitter.configs'.setup {
     --     matchup = {
     --         enable = true,     -- mandatory, false will disable the whole extension
