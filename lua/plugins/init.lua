@@ -14,15 +14,15 @@ function M.setup()
         { 'echasnovski/mini.trailspace', version = '*',   lazy = false, },
         { 'mg979/vim-visual-multi',      lazy = false, },
         { 'ellisonleao/gruvbox.nvim',    priority = 1000, },
-        {
-            'folke/which-key.nvim',
-            lazy = false,
-            config = function()
-                vim.o.timeout = true
-                vim.o.timeoutlen = 300
-                require 'which-key'.setup()
-            end,
-        },
+        -- {
+        --     'folke/which-key.nvim',
+        --     lazy = false,
+        --     config = function()
+        --         vim.o.timeout = true
+        --         vim.o.timeoutlen = 300
+        --         require 'which-key'.setup()
+        --     end,
+        -- },
         -- { 'rcarriga/nvim-notify', },
         -- {
         --     'folke/noice.nvim',
@@ -184,6 +184,7 @@ function M.setup()
     require 'plugins.b_custom_filetypes'.setup()
     require 'plugins.b_formatter'.setup()
     require 'plugins.b_session'.setup()
+    require 'plugins.b_drumtab'.setup()
 end
 
 return M
