@@ -74,7 +74,6 @@ local function parse_measure_count()
 end
 
 
--- EXPERIMENTAL
 local function add_to_group(part, current_group)
     if not current_group:match '^<.*>$' then
         return '<' .. current_group .. ' ' .. part .. '>'
@@ -167,13 +166,88 @@ local function set_buffer_lines(start_line, new_lines)
     vim.api.nvim_buf_set_lines(0, start_line, start_line, false, new_lines)
 end
 
+-- EXPERIMENTAL
+local function identify_tabs(buffer_lines)
+    local groups = {}
+    local current_group = {}
+    local current_tab = {}
+    local blank_line_count = 0
+
+    for _, line in ipairs(buffer_lines) do
+        if line:match '^%u%u ' then -- Line belongs to a drum tab part
+            blank_line_count = 0
+            table.insert(current_tab, line)
+        elseif line:match '^%s*$' then -- Empty line encountered
+            blank_line_count = blank_line_count + 1
+            if blank_line_count == 1 then
+                if #current_tab > 0 then
+                    table.insert(current_group, current_tab)
+                    current_tab = {}
+                end
+            elseif blank_line_count > 1 then
+                if #current_group > 0 then
+                    table.insert(groups, current_group)
+                    current_group = {}
+                end
+            end
+        end
+    end
+
+    -- Add the last tab and group if they exist
+    if #current_tab > 0 then
+        table.insert(current_group, current_tab)
+    end
+    if #current_group > 0 then
+        table.insert(groups, current_group)
+    end
+
+    return groups
+end
+
+local function merge_tabs_within_group(group)
+    local merged_tabs = {}
+
+    for _, tab in ipairs(group) do
+        for _, line in ipairs(tab) do
+            local part_name = line:sub(1, 2)
+            local part_content = line:sub(4)
+
+            if not merged_tabs[part_name] then
+                merged_tabs[part_name] = part_content
+            else
+                merged_tabs[part_name] = merged_tabs[part_name] .. part_content:gsub('^|', '')
+            end
+        end
+    end
+
+    return merged_tabs
+end
+
+local function print_merged_tabs_and_groups(groups)
+    for _, group in ipairs(groups) do
+        local merged_tabs = merge_tabs_within_group(group)
+
+        for part_name, part_content in pairs(merged_tabs) do
+            vim.api.nvim_buf_set_lines(0, -1, -1, false, { part_name .. ' ' .. part_content, })
+        end
+        vim.api.nvim_buf_set_lines(0, -1, -1, false, { '', }) -- Insert an empty line after each merged tab group
+
+        -- Add separator if there are more groups
+        if _ < #groups then
+            vim.api.nvim_buf_set_lines(0, -1, -1, false, { '---', '', })
+        end
+    end
+end
+
+-- EXPERIMENTAL END
+
 local function show_measure_count()
     local measures = parse_measure_count()
     local lines = get_buffer_lines(0, -1)
-    local tab1 = { unpack(lines, 1, 4), }
-    local tab2 = { unpack(lines, 6, 9), }
 
-    local merged_tab = merge_drum_tabs(tab1, tab2)
+    -- local tab1 = { unpack(lines, 1, 4), }
+    -- local tab2 = { unpack(lines, 6, 9), }
+    -- local merged_tab = merge_drum_tabs(tab1, tab2)
 
     vim.cmd 'new'
 
@@ -181,10 +255,10 @@ local function show_measure_count()
     vim.api.nvim_buf_set_lines(0, 0, -1, false, { 'Number of measures: ' .. measures, })
     -- vim.api.nvim_buf_set_lines(0, 0, -1, false, { 'result: ' .. table.concat(merged_tab, ' '), })
     -- vim.api.nvim_buf_set_lines(0, 0, -1, false, merged_tab)
-    set_buffer_lines(#lines, merged_tab)
+    -- set_buffer_lines(#lines, merged_tab)
+    local groups = identify_tabs(lines)
+    print_merged_tabs_and_groups(groups)
 end
-
--- EXPERIMENTAL END
 
 
 -- Function to draw the empty 4/4 drum tablature
