@@ -75,6 +75,15 @@ end
 
 
 -- EXPERIMENTAL
+local function add_to_group(part, current_group)
+    if not current_group:match '^<.*>$' then
+        return '<' .. current_group .. ' ' .. part .. '>'
+    else
+        -- Remove the last '>' and add the new part inside the delimiters
+        return current_group:sub(1, -2) .. ' ' .. part .. '>'
+    end
+end
+
 local function parse_drum_table(drum_table)
     local result = {}
     local current_unit = ''
@@ -83,7 +92,7 @@ local function parse_drum_table(drum_table)
     for i = 1, #drum_table do
         if drum_table[i] == '-' then
             if i == 1 then
-                current_unit = 'R'
+                current_unit = 'RRr'
             else
                 current_length = current_length + 1
             end
@@ -121,9 +130,10 @@ local function merge_drum_tabs(tab1, tab2)
                 result[j] = char
             elseif char ~= '-' then
                 if result[j] == nil or result[j] == '-' then
-                    result[j] = drum_part
+                    result[j] = drum_part .. char
                 else
-                    result[j] = result[j] .. ',' .. drum_part
+                    -- result[j] = result[j] .. ',' .. drum_part .. char
+                    result[j] = add_to_group(drum_part .. char, result[j])
                 end
             else
                 if result[j] == nil then
@@ -139,7 +149,7 @@ local function merge_drum_tabs(tab1, tab2)
         if result[i] == '|' then
             table.insert(drum_table,
                 table.concat(
-                    parse_drum_table(line_tmp)))
+                    parse_drum_table(line_tmp), ' '))
             line_tmp = {}
         else
             table.insert(line_tmp, result[i])
