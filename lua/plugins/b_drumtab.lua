@@ -75,6 +75,33 @@ end
 
 
 -- EXPERIMENTAL
+local function parse_drum_table(drum_table)
+    local result = {}
+    local current_unit = ''
+    local current_length = 1
+
+    for i = 1, #drum_table do
+        if drum_table[i] == '-' then
+            if i == 1 then
+                current_unit = 'R'
+            else
+                current_length = current_length + 1
+            end
+        else
+            if current_unit ~= '' then
+                table.insert(result, current_unit .. current_length)
+            end
+            current_unit = drum_table[i]
+            current_length = 1
+        end
+    end
+
+    if current_unit ~= '' then
+        table.insert(result, current_unit .. current_length)
+    end
+
+    return result
+end
 
 local function merge_drum_tabs(tab1, tab2)
     local result = {}
@@ -84,13 +111,15 @@ local function merge_drum_tabs(tab1, tab2)
         local part2 = tab2[i]
 
         local merged_line = part1:sub(1, 4) .. part1:sub(5) .. part2:sub(5)
-        merged_line = merged_line:gsub('|', '')
+        -- merged_line = merged_line:gsub('|', '')
         local drum_part = merged_line:sub(1, 2) -- Extract the drum part (e.g., 'CC')
         local pattern = merged_line:sub(4)      -- Extract the rest of the line (the pattern)
         for j = 1, #pattern do
             local char = pattern:sub(j, j)
 
-            if char ~= '-' then
+            if char == '|' then
+                result[j] = char
+            elseif char ~= '-' then
                 if result[j] == nil or result[j] == '-' then
                     result[j] = drum_part
                 else
@@ -104,17 +133,29 @@ local function merge_drum_tabs(tab1, tab2)
         end
     end
 
+    local drum_table = {}
+    local line_tmp = {}
+    for i = 1, #result do
+        if result[i] == '|' then
+            table.insert(drum_table,
+                table.concat(
+                    parse_drum_table(line_tmp)))
+            line_tmp = {}
+        else
+            table.insert(line_tmp, result[i])
+        end
+    end
     -- return merged_tab
-    return table.concat(result, ' ')
+    return drum_table
 end
 
 local function get_buffer_lines(start_line, end_line)
     return vim.api.nvim_buf_get_lines(0, start_line, end_line, false)
 end
 
--- local function set_buffer_lines(start_line, new_lines)
---     vim.api.nvim_buf_set_lines(0, start_line, start_line, false, new_lines)
--- end
+local function set_buffer_lines(start_line, new_lines)
+    vim.api.nvim_buf_set_lines(0, start_line, start_line, false, new_lines)
+end
 
 local function show_measure_count()
     local measures = parse_measure_count()
@@ -128,8 +169,9 @@ local function show_measure_count()
 
     -- Write the number of measures into the buffer
     vim.api.nvim_buf_set_lines(0, 0, -1, false, { 'Number of measures: ' .. measures, })
-    vim.api.nvim_buf_set_lines(0, 0, -1, false, { 'result: ' .. merged_tab, })
-    -- set_buffer_lines(#lines, merged_tab)
+    -- vim.api.nvim_buf_set_lines(0, 0, -1, false, { 'result: ' .. table.concat(merged_tab, ' '), })
+    -- vim.api.nvim_buf_set_lines(0, 0, -1, false, merged_tab)
+    set_buffer_lines(#lines, merged_tab)
 end
 
 -- EXPERIMENTAL END
