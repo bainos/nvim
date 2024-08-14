@@ -111,17 +111,12 @@ local function parse_drum_table(drum_table)
     return result
 end
 
-local function merge_drum_tabs(tab1, tab2)
+local function lilypondify(tab1)
     local result = {}
 
-    for i = 1, #tab1 do
-        local part1 = tab1[i]
-        local part2 = tab2[i]
-
-        local merged_line = part1:sub(1, 4) .. part1:sub(5) .. part2:sub(5)
-        -- merged_line = merged_line:gsub('|', '')
-        local drum_part = merged_line:sub(1, 2) -- Extract the drum part (e.g., 'CC')
-        local pattern = merged_line:sub(4)      -- Extract the rest of the line (the pattern)
+    for part_name, part_content in pairs(tab1) do
+        local drum_part = part_name
+        local pattern = part_content
         for j = 1, #pattern do
             local char = pattern:sub(j, j)
 
@@ -131,7 +126,6 @@ local function merge_drum_tabs(tab1, tab2)
                 if result[j] == nil or result[j] == '-' then
                     result[j] = drum_part .. char
                 else
-                    -- result[j] = result[j] .. ',' .. drum_part .. char
                     result[j] = add_to_group(drum_part .. char, result[j])
                 end
             else
@@ -162,10 +156,10 @@ local function get_buffer_lines(start_line, end_line)
     return vim.api.nvim_buf_get_lines(0, start_line, end_line, false)
 end
 
-local function set_buffer_lines(start_line, new_lines)
-    vim.api.nvim_buf_set_lines(0, start_line, start_line, false, new_lines)
-end
-
+-- local function set_buffer_lines(start_line, new_lines)
+--     vim.api.nvim_buf_set_lines(0, start_line, start_line, false, new_lines)
+-- end
+--
 -- EXPERIMENTAL
 local function identify_tabs(buffer_lines)
     local groups = {}
@@ -220,15 +214,15 @@ local function merge_tabs_within_group(group)
         end
     end
 
-    return merged_tabs
+    return lilypondify(merged_tabs)
 end
 
 local function print_merged_tabs_and_groups(groups)
     for _, group in ipairs(groups) do
         local merged_tabs = merge_tabs_within_group(group)
 
-        for part_name, part_content in pairs(merged_tabs) do
-            vim.api.nvim_buf_set_lines(0, -1, -1, false, { part_name .. ' ' .. part_content, })
+        for i = 1, #merged_tabs do
+            vim.api.nvim_buf_set_lines(0, -1, -1, false, { merged_tabs[i], })
         end
         vim.api.nvim_buf_set_lines(0, -1, -1, false, { '', }) -- Insert an empty line after each merged tab group
 
