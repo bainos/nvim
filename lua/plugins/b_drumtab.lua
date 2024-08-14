@@ -66,8 +66,7 @@ local function parse_measure_count()
     if tab_lines > 0 then
         local pipes = total_pipes - tab_lines
         local total_measures = pipes / #drum_parts
-        return total_measures .. ' | ' .. pipes
-            .. ' / ' .. tab_lines
+        return total_measures
     else
         return 0
     end
@@ -115,18 +114,16 @@ local function lilypondify(tab1)
     local result = {}
 
     for part_name, part_content in pairs(tab1) do
-        local drum_part = part_name
-        local pattern = part_content
-        for j = 1, #pattern do
-            local char = pattern:sub(j, j)
+        for j = 1, #part_content do
+            local char = part_content:sub(j, j)
 
             if char == '|' then
                 result[j] = char
             elseif char ~= '-' then
                 if result[j] == nil or result[j] == '-' then
-                    result[j] = drum_part .. char
+                    result[j] = part_name .. char
                 else
-                    result[j] = add_to_group(drum_part .. char, result[j])
+                    result[j] = add_to_group(part_name .. char, result[j])
                 end
             else
                 if result[j] == nil then
