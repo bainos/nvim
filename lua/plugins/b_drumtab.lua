@@ -61,65 +61,42 @@ local function add_to_group(part, current_group)
     end
 end
 
-local function parse_drum_linline(line, time_sig, subdivision)
-    local result = {}
-    local current_unit = ''
-    local current_length = 1
+local function parse_drum_tab(dtab, time_sig)
     local beats, beat_unit = time_sig:match '(%d+)/(%d+)'
     beats = tonumber(beats)
     beat_unit = tonumber(beat_unit)
-    local dash_length = beat_unit * subdivision
 
-    vim.notify('line: ' .. vim.inspect(line))
-    for i = 1, #line do
-        if line[i] == '-' and line[i - 1] == '|' then
-            line[i] = 'RRr'
-        end
-
-        if line[i] == '|' or line[i] ~= '-' then
-            if current_unit ~= '' then
-                local note_length = dash_length / current_length
-                vim.notify('note_length: ' .. tostring(note_length))
-                table.insert(result, current_unit .. note_length)
+    local dt = {}
+    for _, measure in ipairs(dtab) do
+        local m = {}
+        local current_unit = ''
+        local current_length = 1
+        local dash_length = beat_unit * #measure
+        for i = 1, #measure do
+            if measure[i] == '-' and i == 1 then
+                measure[i] = 'RRr'
             end
 
-            current_length = 1
-            current_unit = (line[i] == '|' and '') or line[i]
-        else
-            current_length = current_length + 1
-        end
+            if measure[i] ~= '-' then
+                if current_unit ~= '' then
+                    local note_length = dash_length / current_length
+                    table.insert(m, current_unit .. note_length)
+                end
 
-        vim.notify(line[i] .. ' ' .. tostring(current_length))
+                current_length = 1
+                current_unit = measure[i]
+            else
+                current_length = current_length + 1
+            end
+        end
+        if current_unit ~= '' then
+            local note_length = dash_length / current_length
+            table.insert(m, current_unit .. note_length)
+        end
+        table.insert(dt, m)
     end
 
-    -- for i = 1, #line do
-    --     if i % beat_unit == 1 and line[i] == '-' then
-    --         line[i] = 'RRr'
-    --     end
-    --     if line[i] == '-' then
-    --         current_length = current_length + 1
-    --     else
-    --         if current_unit ~= '' then
-    --             local note_length = dash_length / current_length
-    --             table.insert(result, current_unit .. note_length)
-    --         end
-    --         current_unit = line[i]
-    --         current_length = 1
-    --     end
-    -- end
-    --
-    -- if current_unit ~= '' then
-    --     local note_length = dash_length / current_length
-    --     table.insert(result, current_unit .. note_length)
-    -- end
-
-    return result
-end
-
-local function tab_subdivision(tab_line)
-    local _, first_pipe_end = tab_line:find '|'
-    local second_pipe_start = tab_line:find('|', first_pipe_end + 1)
-    return second_pipe_start - first_pipe_end - 1
+    return dt
 end
 
 local function collapse_rows(tab)
@@ -129,8 +106,6 @@ local function collapse_rows(tab)
     else
         time_sig = '4/4'
     end
-
-    local subdivision = tab_subdivision(tab[1])
 
     local result = {}
     for _, line in ipairs(tab) do
@@ -160,7 +135,20 @@ local function collapse_rows(tab)
         end
     end
 
-    return parse_drum_linline(result, time_sig, subdivision)
+    local dtab = {}
+    local measure = {}
+    for _, e in ipairs(result) do
+        if e == '|' then
+            if #measure > 0 then
+                table.insert(dtab, measure)
+                measure = {}
+            end
+        else
+            table.insert(measure, e)
+        end
+    end
+
+    return parse_drum_tab(dtab, time_sig)
 end
 
 local function merge_tabs_within_group(group)
@@ -168,8 +156,6 @@ local function merge_tabs_within_group(group)
 
     for _, tab in ipairs(group) do
         tab = collapse_rows(tab)
-        vim.notify('collapsed tab: ' .. vim.inspect(tab))
-
         for _, v in ipairs(tab) do
             table.insert(merged_tabs, v)
         end
@@ -183,7 +169,7 @@ local function print_merged_tabs_and_groups(groups)
         local merged_tabs = merge_tabs_within_group(group)
 
         for i = 1, #merged_tabs do
-            vim.api.nvim_buf_set_lines(0, -1, -1, false, { merged_tabs[i], })
+            vim.api.nvim_buf_set_lines(0, -1, -1, false, { table.concat(merged_tabs[i], ' '), })
         end
         vim.api.nvim_buf_set_lines(0, -1, -1, false, { '', }) -- Insert an empty line after each merged tab group
 
