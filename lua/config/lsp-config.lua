@@ -11,7 +11,7 @@ function M.setup()
         table.insert(lsp_servers, 'dockerls')
         table.insert(lsp_servers, 'terraformls')
         table.insert(lsp_servers, 'azure_pipelines_ls')
-        table.insert(lsp_servers, 'ruff_lsp')
+        table.insert(lsp_servers, 'ruff')
         table.insert(lsp_servers, 'pyright')
         table.insert(lsp_servers, 'yamlls')
         table.insert(lsp_servers, 'marksman')
@@ -70,7 +70,7 @@ function M.setup()
                 end,
             },
         },
-        ruff_lsp = {
+        ruff = {
             init_options = {
                 settings = {
                     -- Any extra CLI arguments for `ruff` go here.
