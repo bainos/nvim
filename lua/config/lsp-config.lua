@@ -35,7 +35,7 @@ function M.setup()
         automatic_installation = false,
     }
 
-    local diagnostic_config = {
+    vim.diagnostic.config {
         signs = {
             -- DEPRECATED 2024-03-27
             -- severity_limit = 'Warning',
@@ -45,9 +45,6 @@ function M.setup()
         virtual_text = false,
         update_in_insert = false,
     }
-
-    vim.lsp.handlers['textDocument/publishDiagnostics'] = vim.lsp.with(
-        vim.lsp.diagnostic.on_publish_diagnostics, diagnostic_config)
 
     local capabilities = require 'cmp_nvim_lsp'.default_capabilities()
 
@@ -109,8 +106,12 @@ function M.setup()
                     server = 'debug',
                 },
                 yaml = {
-                    schemas = { kubernetes = '/*.yaml', },
-                    schemaStore = { enable = true },
+                    schemas = { ['https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/_definitions.json'] = '/*.yaml', },
+                    schemaStore = {
+                        url =
+                        'https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/api/json/catalog.json',
+                        enable = true,
+                    },
                 },
                 schemaDownload = { enable = true, },
                 validate = true,

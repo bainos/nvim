@@ -16,12 +16,22 @@ function M.setup()
         { 'ellisonleao/gruvbox.nvim',    priority = 1000, },
         {
             'folke/which-key.nvim',
-            lazy = false,
-            config = function()
-                vim.o.timeout = true
-                vim.o.timeoutlen = 300
-                require 'which-key'.setup()
-            end,
+            event = 'VeryLazy',
+            opts = {
+                preset = 'helix',
+                delay = function()
+                    return 1000
+                end,
+            },
+            keys = {
+                {
+                    '<leader>?',
+                    function()
+                        require 'which-key'.show { global = false, }
+                    end,
+                    desc = 'Buffer Local Keymaps (which-key)',
+                },
+            },
         },
         -- { 'rcarriga/nvim-notify', },
         -- {
@@ -56,7 +66,7 @@ function M.setup()
                     modules = {},
                     ignore_install = {},
                     auto_install = true,
-                    ensure_installed = { 'bash', 'lua', 'vim', 'vimdoc', 'rust', 'yaml', 'python', 'hcl', 'markdown', },
+                    ensure_installed = { 'bash', 'lua', 'vim', 'vimdoc', 'rust', 'yaml', 'python', 'hcl', 'markdown', 'json', },
                     sync_install = true,
                     highlight = { enable = true, },
                     indent = { enable = true, },
