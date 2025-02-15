@@ -66,7 +66,7 @@ function M.setup()
                     modules = {},
                     ignore_install = {},
                     auto_install = true,
-                    ensure_installed = { 'bash', 'lua', 'vim', 'vimdoc', 'rust', 'yaml', 'python', 'hcl', 'markdown', 'json', },
+                    ensure_installed = { 'bash', 'lua', 'vim', 'vimdoc', 'rust', 'yaml', 'python', 'hcl', 'markdown', 'json', 'dockerfile', },
                     sync_install = true,
                     highlight = { enable = true, },
                     indent = { enable = true, },
@@ -113,6 +113,10 @@ function M.setup()
 
     -- helm
     if string.find(hostname, 'farm-net', 1, true) then
+        table.insert(plugins, 'towolf/vim-helm')
+    end
+
+    if vim.g.neovide then
         table.insert(plugins, 'towolf/vim-helm')
     end
 
@@ -194,6 +198,7 @@ function M.setup()
     require 'plugins.b_custom_filetypes'.setup()
     require 'plugins.b_formatter'.setup()
     require 'plugins.b_session'.setup()
+    -- require 'plugins.b_yank_mouse_restore'.setup()
 end
 
 return M

@@ -4,6 +4,18 @@ function M.setup()
     local hostname = require 'settings'.hostname()
     local ts_languages = { 'regex', }
 
+    if string.find(hostname, 'riddick', 1, true) then
+        table.insert(ts_languages, 'bash')
+        table.insert(ts_languages, 'dockerfile')
+        table.insert(ts_languages, 'python')
+        table.insert(ts_languages, 'lua')
+        table.insert(ts_languages, 'hcl')
+        table.insert(ts_languages, 'vim')
+        table.insert(ts_languages, 'yaml')
+        table.insert(ts_languages, 'rust')
+        table.insert(ts_languages, 'go')
+    end
+
     if string.find(hostname, 'farm-net', 1, true) then
         table.insert(ts_languages, 'bash')
         table.insert(ts_languages, 'dockerfile')
@@ -15,6 +27,18 @@ function M.setup()
         table.insert(ts_languages, 'rust')
         table.insert(ts_languages, 'go')
     end
+
+    -- if vim.g.neovide then
+    --     table.insert(ts_languages, 'bash')
+    --     table.insert(ts_languages, 'dockerfile')
+    --     table.insert(ts_languages, 'python')
+    --     table.insert(ts_languages, 'lua')
+    --     table.insert(ts_languages, 'hcl')
+    --     table.insert(ts_languages, 'vim')
+    --     table.insert(ts_languages, 'yaml')
+    --     table.insert(ts_languages, 'rust')
+    --     table.insert(ts_languages, 'go')
+    -- end
 
     if string.find(hostname, 'archtab') then
         table.insert(ts_languages, 'bash')

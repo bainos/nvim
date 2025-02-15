@@ -1,7 +1,14 @@
 local M = {}
 
+-- Helper function to print debug messages
+local function debug(msg)
+    vim.api.nvim_echo({ { "[LSP Config]: " .. msg, "WarningMsg" } }, true, {})
+end
+
 function M.setup()
     local hostname = require 'settings'.hostname()
+    debug('Hostname: ' .. hostname)
+
     local lsp_servers = {}
 
     if string.find(hostname, 'farm-net', 1, true) then
@@ -12,6 +19,19 @@ function M.setup()
         table.insert(lsp_servers, 'terraformls')
         table.insert(lsp_servers, 'azure_pipelines_ls')
         table.insert(lsp_servers, 'ruff')
+        table.insert(lsp_servers, 'pyright')
+        table.insert(lsp_servers, 'yamlls')
+        table.insert(lsp_servers, 'marksman')
+    end
+
+    if vim.g.neovide then
+        table.insert(lsp_servers, 'bashls')
+        table.insert(lsp_servers, 'lua_ls')
+        table.insert(lsp_servers, 'rust_analyzer')
+        table.insert(lsp_servers, 'dockerls')
+        table.insert(lsp_servers, 'terraformls')
+        table.insert(lsp_servers, 'azure_pipelines_ls')
+        -- table.insert(lsp_servers, 'ruff')
         table.insert(lsp_servers, 'pyright')
         table.insert(lsp_servers, 'yamlls')
         table.insert(lsp_servers, 'marksman')

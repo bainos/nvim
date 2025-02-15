@@ -70,6 +70,24 @@ function M.setup()
     --     --{ command = 'lua vim.lsp.buf.format()' }
     --     { callback = formatter.buf_format, }
     -- )
+
+    if vim.g.neovide then
+        vim.api.nvim_echo({ { 'This is Neovide! ' .. vim.g.neovide_version, "WarningMsg" } }, true, {})
+
+        vim.opt.clipboard = "unnamedplus"
+        vim.opt.mouse = 'a'
+
+        -- Copy to system clipboard
+        vim.api.nvim_set_keymap('n', '<C-S-c>', '"+y', { noremap = true, silent = true })
+        vim.api.nvim_set_keymap('v', '<C-S-c>', '"+y', { noremap = true, silent = true })
+
+        -- Paste from system clipboard
+        vim.api.nvim_set_keymap('n', '<C-S-v>', '"+p', { noremap = true, silent = true })
+        vim.api.nvim_set_keymap('i', '<C-S-v>', '<C-R>+', { noremap = true, silent = true })
+        vim.api.nvim_set_keymap('c', '<C-S-v>', '<C-R>+', { noremap = true, silent = true })
+        vim.api.nvim_set_keymap('t', '<C-S-v>', '<C-R>+', { noremap = true, silent = true })
+    end
+
 end
 
 return M

@@ -9,6 +9,11 @@ function M.setup()
         table.insert(formatters, 'prettier') -- yaml
     end
 
+    if vim.g.neovide then
+        table.insert(formatters, 'shfmt')
+        table.insert(formatters, 'prettier') -- yaml
+    end
+
     if string.find(hostname, 'archtab') then
         table.insert(formatters, 'shfmt')
     end
