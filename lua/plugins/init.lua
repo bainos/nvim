@@ -116,6 +116,10 @@ function M.setup()
         table.insert(plugins, 'towolf/vim-helm')
     end
 
+    if vim.g.neovide then
+        table.insert(plugins, 'towolf/vim-helm')
+    end
+
     -- Flutter/Dart
     if string.find(hostname, '012') then
         table.insert(plugins, {
@@ -194,6 +198,7 @@ function M.setup()
     require 'plugins.b_custom_filetypes'.setup()
     require 'plugins.b_formatter'.setup()
     require 'plugins.b_session'.setup()
+    -- require 'plugins.b_yank_mouse_restore'.setup()
 end
 
 return M
