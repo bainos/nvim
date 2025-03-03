@@ -66,7 +66,7 @@ function M.setup()
                     modules = {},
                     ignore_install = {},
                     auto_install = true,
-                    ensure_installed = { 'bash', 'lua', 'vim', 'vimdoc', 'rust', 'yaml', 'python', 'hcl', 'markdown', 'json', },
+                    ensure_installed = { 'bash', 'lua', 'vim', 'vimdoc', 'rust', 'yaml', 'python', 'hcl', 'markdown', 'json', 'dockerfile', },
                     sync_install = true,
                     highlight = { enable = true, },
                     indent = { enable = true, },
