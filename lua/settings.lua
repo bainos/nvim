@@ -107,11 +107,11 @@ function M.setup()
     'deps,.svn,CVS,.git,.hg,*.o,*.a,*.class,*.mo,*.la,*.so,*.obj,*.swp,*.jpg,*.png,*.xpm,*.gif,.DS_Store,*.aux,*.out,*.toc'
 
     -- :help exrc
-    -- If the 'exrc' option is on (which is NOT the default), the current                                                                                                               │*
-    -- directory is searched for the following files, in order of precedence:                                                                                                           │E
-    -- - ".nvim.lua"                                                                                                                                                                    │>
-    -- - ".nvimrc"                                                                                                                                                                      │
-    -- - ".exrc"                                                                                                                                                                        │*
+    -- If the 'exrc' option is on (which is NOT the default), the current
+    -- directory is searched for the following files, in order of precedence:
+    -- - ".nvim.lua"
+    -- - ".nvimrc"
+    -- - ".exrc"
     -- The first that exists is used, the others are ignored.
     vim.o.exrc          = true
 
