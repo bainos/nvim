@@ -5,15 +5,15 @@ function M.setup()
     -- local opts = { noremap = true, silent = true, }
 
     -- cursor (Emacs' bindings)
-    vim.api.nvim_set_keymap('n', '<C-a>', '^', { noremap = true, silent = true, desc = 'go to the beginning', })
-    vim.api.nvim_set_keymap('i', '<C-a>', '<Esc>^i', { noremap = true, silent = true, desc = 'go to the beginning', })
-    vim.api.nvim_set_keymap('v', '<C-a>', '^', { noremap = true, silent = true, desc = 'go to the beginning', })
-    vim.api.nvim_set_keymap('n', '<C-e>', '$', { noremap = true, silent = true, desc = 'go to the end', })
-    vim.api.nvim_set_keymap('i', '<C-e>', '<Esc>$i', { noremap = true, silent = true, desc = 'go to the end', })
-    vim.api.nvim_set_keymap('v', '<C-e>', '$', { noremap = true, silent = true, desc = 'go to the end', })
+    -- vim.api.nvim_set_keymap('n', '<C-a>', '^', { noremap = true, silent = true, desc = 'go to the beginning', })
+    -- vim.api.nvim_set_keymap('i', '<C-a>', '<Esc>^i', { noremap = true, silent = true, desc = 'go to the beginning', })
+    -- vim.api.nvim_set_keymap('v', '<C-a>', '^', { noremap = true, silent = true, desc = 'go to the beginning', })
+    -- vim.api.nvim_set_keymap('n', '<C-e>', '$', { noremap = true, silent = true, desc = 'go to the end', })
+    -- vim.api.nvim_set_keymap('i', '<C-e>', '<Esc>$i', { noremap = true, silent = true, desc = 'go to the end', })
+    -- vim.api.nvim_set_keymap('v', '<C-e>', '$', { noremap = true, silent = true, desc = 'go to the end', })
 
     -- code actions
-    vim.keymap.set('n', '<Leader>a', vim.lsp.buf.code_action, { noremap = true, silent = true, desc = 'code actions', })
+    vim.keymap.set('n', '<Leader>ca', vim.lsp.buf.code_action, { noremap = true, silent = true, desc = 'code actions', })
 
     -- formatter
     local formatter = require 'plugins.b_formatter'
