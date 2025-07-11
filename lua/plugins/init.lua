@@ -1,15 +1,12 @@
 local M = {}
 
 function M.setup()
-    local hostname = require 'settings'.hostname()
     local plugins = {
         { 'folke/lazy.nvim',             version = '*', },
         { 'echasnovski/mini.nvim',       version = '*',   lazy = false, },
         { 'echasnovski/mini.comment',    version = '*',   lazy = false, },
         { 'echasnovski/mini.files',      version = '*',   lazy = false, },
-        -- { 'echasnovski/mini.pairs', version = '*', event = 'InsertEnter' },
         { 'echasnovski/mini.statusline', version = '*',   event = 'VeryLazy', },
-        -- { 'echasnovski/mini.surround', version = '*', event = 'InsertEnter' },
         { 'echasnovski/mini.tabline',    version = '*',   lazy = false, },
         { 'echasnovski/mini.trailspace', version = '*',   lazy = false, },
         { 'mg979/vim-visual-multi',      lazy = false, },
@@ -29,21 +26,31 @@ function M.setup()
                 },
             },
         },
-        -- { 'rcarriga/nvim-notify' },
-        -- {
-        --     'folke/noice.nvim',
-        --     event = 'VeryLazy',
-        --     opts = {},
-        --     dependencies = {
-        --         'MunifTanjim/nui.nvim', 'rcarriga/nvim-notify',
-        --     },
-        -- },
         {
             'nvim-telescope/telescope.nvim',
             dependencies = {
                 'nvim-lua/plenary.nvim',
                 'nvim-tree/nvim-web-devicons',
             },
+            config = function()
+                require('telescope').setup({
+                    defaults = {
+                        prompt_prefix = "  ",
+                        selection_caret = " ",
+                        path_display = { "truncate" },
+                    },
+                    pickers = {
+                        find_files = {
+                            hidden = true,
+                        },
+                        live_grep = {
+                            additional_args = function()
+                                return {"--hidden"}
+                            end,
+                        },
+                    },
+                })
+            end,
         },
         {
             'andymass/vim-matchup',
@@ -79,16 +86,61 @@ function M.setup()
         },
         { 'WhoIsSethDaniel/mason-tool-installer.nvim', },
         {
-            'hrsh7th/nvim-cmp',
+            'zbirenbaum/copilot.lua',
+            cmd = 'Copilot',
             event = 'InsertEnter',
-            dependencies = {
-                'hrsh7th/cmp-nvim-lsp',
-                'hrsh7th/cmp-buffer',
-                'hrsh7th/cmp-path',
-                'hrsh7th/cmp-cmdline',
-                'saadparwaiz1/cmp_luasnip',
-                'L3MON4D3/LuaSnip',
-            },
+            config = function()
+                require('copilot').setup({
+                    panel = {
+                        enabled = true,
+                        auto_refresh = false,
+                        keymap = {
+                            jump_prev = "[[",
+                            jump_next = "]]",
+                            accept = "<CR>",
+                            refresh = "gr",
+                            open = "<M-CR>"
+                        },
+                        layout = {
+                            position = "bottom",
+                            ratio = 0.4
+                        },
+                    },
+                    suggestion = {
+                        enabled = true,
+                        auto_trigger = true,
+                        debounce = 75,
+                        keymap = {
+                            accept = "<M-l>",
+                            accept_word = false,
+                            accept_line = false,
+                            next = "<M-]>",
+                            prev = "<M-[>",
+                            dismiss = "<C-]>",
+                        },
+                    },
+                    filetypes = {
+                        yaml = false,
+                        markdown = false,
+                        help = false,
+                        gitcommit = false,
+                        gitrebase = false,
+                        hgcommit = false,
+                        svn = false,
+                        cvs = false,
+                        ["."] = false,
+                    },
+                    copilot_node_command = 'node',
+                    server_opts_overrides = {},
+                })
+            end,
+        },
+        {
+            'zbirenbaum/copilot-cmp',
+            dependencies = { 'zbirenbaum/copilot.lua' },
+            config = function()
+                require('copilot_cmp').setup()
+            end,
         },
         {
             'coder/claudecode.nvim',
@@ -113,53 +165,8 @@ function M.setup()
                 { '<leader>ad', '<cmd>ClaudeCodeDiffDeny<cr>',   desc = 'Deny diff', },
             },
         },
-        -- {
-        --     'greggh/claude-code.nvim',
-        --     dependencies = {
-        --         'nvim-lua/plenary.nvim', -- Required for git operations
-        --     },
-        --     -- config = function()
-        --     --     require 'claude-code'.setup()
-        --     -- end,
-        -- },
-        -- { import = 'plugins.copilotchat', },
-        -- {
-        --     'CopilotC-Nvim/CopilotChat.nvim',
-        --     dependencies = {
-        --         { 'github/copilot.vim' },
-        --         { 'nvim-lua/plenary.nvim', branch = 'master' },
-        --     },
-        --     build = 'make tiktoken',
-        --     opts = {},
-        -- },
-        -- {
-        --     'hedyhli/outline.nvim',
-        --     lazy = true,
-        --     cmd = { 'Outline', 'OutlineOpen' },
-        --     keys = {
-        --         { '<leader>o', '<cmd>Outline<CR>', desc = 'Toggle outline' },
-        --     },
-        --     opts = {},
-        -- },
+        { 'towolf/vim-helm' },
     }
-
-    -- helm
-    if string.find(hostname, 'farm-net', 1, true) then
-        table.insert(plugins, 'towolf/vim-helm')
-    end
-
-    if vim.g.neovide then
-        table.insert(plugins, 'towolf/vim-helm')
-    end
-
-    -- Flutter/Dart
-    if string.find(hostname, '012') then
-        table.insert(plugins, {
-            'akinsho/flutter-tools.nvim',
-            dependencies = { 'nvim-lua/plenary.nvim', },
-            config = true,
-        })
-    end
 
     local opts = {
         defaults = {
@@ -205,31 +212,13 @@ function M.setup()
             },
         }
         require 'mini.statusline'.setup()
-        require 'mini.surround'.setup()
         require 'mini.trailspace'.setup()
         require 'mini.tabline'.setup()
     end
 
     setup_mini_plugins()
     vim.g.claudecode_auto_setup = { auto_start = true }
-    -- require 'claude-code'.setup()
 
-    -- require 'nvim-treesitter.configs'.setup {
-    --     matchup = {
-    --         enable = true,
-    --     },
-    -- }
-
-    -- require 'notify'.setup {
-    --     stages = 'static',
-    --     render = 'minimal',
-    -- }
-
-    -- b_plugins
-    require 'plugins.b_custom_filetypes'.setup()
-    require 'plugins.b_formatter'.setup()
-    require 'plugins.b_session'.setup()
-    -- require 'plugins.b_yank_mouse_restore'.setup()
 end
 
 return M

@@ -6,49 +6,17 @@ local function debug(msg)
 end
 
 function M.setup()
-    local hostname = require 'settings'.hostname()
-    debug('Hostname: ' .. hostname)
-
-    local lsp_servers = {}
-
-    if string.find(hostname, 'farm-net', 1, true) then
-        table.insert(lsp_servers, 'bashls')
-        table.insert(lsp_servers, 'lua_ls')
-        table.insert(lsp_servers, 'rust_analyzer')
-        table.insert(lsp_servers, 'dockerls')
-        table.insert(lsp_servers, 'terraformls')
-        table.insert(lsp_servers, 'azure_pipelines_ls')
-        table.insert(lsp_servers, 'ruff')
-        table.insert(lsp_servers, 'pyright')
-        table.insert(lsp_servers, 'yamlls')
-        table.insert(lsp_servers, 'marksman')
-    end
-
-    if vim.g.neovide then
-        table.insert(lsp_servers, 'bashls')
-        table.insert(lsp_servers, 'lua_ls')
-        table.insert(lsp_servers, 'rust_analyzer')
-        table.insert(lsp_servers, 'dockerls')
-        table.insert(lsp_servers, 'terraformls')
-        table.insert(lsp_servers, 'azure_pipelines_ls')
-        -- table.insert(lsp_servers, 'ruff')
-        table.insert(lsp_servers, 'pyright')
-        table.insert(lsp_servers, 'yamlls')
-        table.insert(lsp_servers, 'marksman')
-    end
-
-    if string.find(hostname, 'archtab') then
-        table.insert(lsp_servers, 'bashls')
-        table.insert(lsp_servers, 'lua_ls')
-        table.insert(lsp_servers, 'rust_analyzer')
-    end
-
-    if string.find(hostname, '012') then
-        table.insert(lsp_servers, 'lua_ls')
-        table.insert(lsp_servers, 'html')
-        table.insert(lsp_servers, 'cssls')
-        table.insert(lsp_servers, 'volar')
-    end
+    local lsp_servers = {
+        'bashls',
+        'lua_ls',
+        'rust_analyzer',
+        'dockerls',
+        'terraformls',
+        'azure_pipelines_ls',
+        'pyright',
+        'yamlls',
+        'marksman'
+    }
 
     require 'mason-lspconfig'.setup {
         ensure_installed = lsp_servers,
@@ -66,7 +34,7 @@ function M.setup()
         update_in_insert = false,
     }
 
-    local capabilities = require 'cmp_nvim_lsp'.default_capabilities()
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
 
     local runtime_path = vim.split(package.path, ';')
     table.insert(runtime_path, 'lua/?.lua')
@@ -81,20 +49,7 @@ function M.setup()
 
     local lsp_servers_extra_opt = {
         bashls = { filetypes = { 'bash', 'sh', 'zsh', }, },
-        pyright = {
-            handlers = {
-                ['textDocument/publishDiagnostics'] = function(...)
-                end,
-            },
-        },
-        ruff = {
-            init_options = {
-                settings = {
-                    -- Any extra CLI arguments for `ruff` go here.
-                    args = {},
-                },
-            },
-        },
+        pyright = {},
         lua_ls = {
             settings = {
                 Lua = {
@@ -120,62 +75,23 @@ function M.setup()
             cmd = { 'helm_ls', 'serve', },
         },
         yamlls = {
-            filetypes = { 'k8s', },
-            settings = {
-                trace = {
-                    server = 'debug',
-                },
-                yaml = {
-                    schemas = { ['https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/master/_definitions.json'] = '/*.yaml', },
-                    schemaStore = {
-                        url =
-                        'https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/api/json/catalog.json',
-                        enable = true,
-                    },
-                },
-                schemaDownload = { enable = true, },
-                validate = true,
-            },
-        },
-        azure_pipelines_ls = {
+            filetypes = { 'yaml', 'yml' },
             settings = {
                 yaml = {
-                    schemas = {
-                        ['https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json'] = {
-                            '**.yml',
-                        },
-                    },
+                    schemaStore = { enable = true },
+                    validate = true,
                 },
             },
         },
+        azure_pipelines_ls = {},
         rust_analyzer = {
             settings = {
                 ['rust-analyzer'] = {
-                    imports = {
-                        granularity = {
-                            group = 'module',
-                        },
-                        prefix = 'self',
-                    },
-                    cargo = {
-                        buildScripts = {
-                            enable = true,
-                        },
-                    },
-                    procMacro = {
-                        enable = true,
-                    },
                     checkOnSave = {
                         command = 'clippy',
                     },
                 },
             },
-        },
-        html = {
-            filetypes = { 'html', },
-        },
-        volar = {
-            filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue', 'json', },
         },
     }
 

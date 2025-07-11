@@ -1,31 +1,19 @@
 local M = {}
 
 function M.setup()
-    --local bufopts = { noremap=true, silent=true, buffer=bufnr }
-    -- local opts = { noremap = true, silent = true, }
-
-    -- cursor (Emacs' bindings)
-    -- vim.api.nvim_set_keymap('n', '<C-a>', '^', { noremap = true, silent = true, desc = 'go to the beginning', })
-    -- vim.api.nvim_set_keymap('i', '<C-a>', '<Esc>^i', { noremap = true, silent = true, desc = 'go to the beginning', })
-    -- vim.api.nvim_set_keymap('v', '<C-a>', '^', { noremap = true, silent = true, desc = 'go to the beginning', })
-    -- vim.api.nvim_set_keymap('n', '<C-e>', '$', { noremap = true, silent = true, desc = 'go to the end', })
-    -- vim.api.nvim_set_keymap('i', '<C-e>', '<Esc>$i', { noremap = true, silent = true, desc = 'go to the end', })
-    -- vim.api.nvim_set_keymap('v', '<C-e>', '$', { noremap = true, silent = true, desc = 'go to the end', })
 
     -- code actions
     vim.keymap.set('n', '<Leader>ca', vim.lsp.buf.code_action, { noremap = true, silent = true, desc = 'code actions', })
 
     -- formatter
-    local formatter = require 'plugins.b_formatter'
-    vim.api.nvim_create_user_command('Format', formatter.buf_format, { nargs = '?', })
-    vim.keymap.set('n', '<Leader>fr', formatter.buf_format, { noremap = true, silent = true, desc = 'format buffer', })
+    vim.api.nvim_create_user_command('Format', function() vim.lsp.buf.format() end, { desc = 'Format buffer with LSP' })
+    vim.keymap.set('n', '<Leader>fr', vim.lsp.buf.format, { noremap = true, silent = true, desc = 'format buffer', })
     vim.keymap.set('n', '<Leader>tr', ':lua MiniTrailspace.trim()<cr>',
         { noremap = true, silent = true, desc = 'trim trailing spaces', })
 
     -- search
     vim.keymap.set('n', '<C-b>', ':noh<cr>:call clearmatches()<cr>',
         { noremap = true, silent = true, desc = 'clear search matches', })
-    -- vim.keymap.set('n', '*', '*N', opts)
 
     -- buffers
     vim.keymap.set('n', '<Leader>w', ':wa<cr>', { noremap = true, silent = true, desc = 'write all', })
@@ -42,7 +30,7 @@ function M.setup()
     vim.keymap.set('n', '<Leader>n', lsp_diagnostic.goto_next,
         { noremap = true, silent = true, desc = 'diagnostic next', })
     vim.keymap.set('n', '<Leader>p', lsp_diagnostic.goto_prev,
-        { noremap = true, silent = true, desc = 'diagnostic previus', })
+        { noremap = true, silent = true, desc = 'diagnostic previous', })
 
     -- file/buffer manager
     local builtin = require 'telescope.builtin'
@@ -57,19 +45,7 @@ function M.setup()
     vim.keymap.set('n', '<Leader>fm', ':lua MiniFiles.open()<cr>',
         { noremap = true, silent = true, desc = 'file browser', })
     vim.keymap.set('n', '<Leader>bn', ':bnext<cr>', { noremap = true, silent = true, desc = 'next buf', })
-    vim.keymap.set('n', '<Leader>bp', ':bprevious<cr>', { noremap = true, silent = true, desc = 'next buf', })
-
-    -- session
-    local b_session = require 'plugins.b_session'
-    vim.keymap.set('n', '<Leader>ss', b_session.save, { noremap = true, silent = true, desc = 'save session', })
-
-    -- autocmd
-    -- local api = vim.api
-    -- api.nvim_create_autocmd(
-    --     { 'BufWritePre', },
-    --     --{ command = 'lua vim.lsp.buf.format()' }
-    --     { callback = formatter.buf_format, }
-    -- )
+    vim.keymap.set('n', '<Leader>bp', ':bprevious<cr>', { noremap = true, silent = true, desc = 'previous buf', })
 
     if vim.g.neovide then
         vim.api.nvim_echo({ { 'This is Neovide! ' .. vim.g.neovide_version, "WarningMsg" } }, true, {})

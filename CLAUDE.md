@@ -1,188 +1,193 @@
 # Claude Code Documentation for Neovim Configuration
 
 ## Overview
-This is a comprehensive Neovim configuration built with modern Lua architecture, organized into modular components. The configuration features plugin management via Lazy.nvim, LSP support, auto-completion, and various productivity enhancements.
+A **simplified, modern Neovim configuration** built with Lua architecture. This configuration focuses on essential functionality with LSP for diagnostics, Copilot.lua for AI-powered completion, and Claude Code for AI assistance. The setup is clean, maintainable, and performance-optimized.
 
-## Structure
+## Architecture
 ```
 .config/nvim/
 ├── init.lua                    # Main entry point
 ├── lazy-lock.json             # Plugin version lock file
-├── prettierrc                 # Prettier configuration
 ├── lua/
 │   ├── settings.lua           # Core Neovim settings
 │   ├── config/
 │   │   ├── init.lua          # Configuration module loader
-│   │   ├── keymap.lua        # Key mappings
-│   │   ├── lsp-config.lua    # LSP server configurations
-│   │   ├── nvim-cmp.lua      # Auto-completion setup
+│   │   ├── keymap.lua        # Key mappings (24 essential bindings)
+│   │   ├── lsp-config.lua    # LSP server configurations (9 servers)
+│   │   ├── copilot-cmp.lua   # Copilot completion setup
 │   │   ├── nvim-treesitter.lua # Tree-sitter configuration
-│   │   └── themes.lua        # Theme configuration
+│   │   └── themes.lua        # Gruvbox theme configuration
 │   └── plugins/
-│       ├── init.lua          # Plugin definitions and setup
-│       ├── b_custom_filetypes.lua # Custom file type definitions
-│       ├── b_formatter.lua   # Code formatting utilities
-│       ├── b_session.lua     # Session management
-│       ├── b_yank_mouse_restore.lua # Mouse and yank utilities
-│       └── copilotchat.lua   # CopilotChat configuration
-├── tests/
-│   └── lsp_format.lua        # LSP formatting tests
+│       └── init.lua          # Plugin definitions (~15 essential plugins)
+├── docs/
+│   └── refactoring/          # Historical refactoring documentation
 └── tmp/
     ├── backup/               # Backup files directory
     ├── undo/                 # Undo files directory
     └── swap/                 # Swap files directory
 ```
 
-## Key Features
+## Core Features
 
 ### Plugin Management
 - **Lazy.nvim**: Modern plugin manager with lazy loading
-- **Mini.nvim**: Collection of minimal, independent plugins
-- **Mason.nvim**: LSP server, formatter, and tool installer
+- **Simplified setup**: No hostname-based conditional loading
+- **Performance optimized**: Essential plugins only
 
-### Core Plugins
-- **Telescope**: Fuzzy finder and file picker
-- **Treesitter**: Syntax highlighting and parsing
-- **LSP**: Language Server Protocol support
-- **nvim-cmp**: Auto-completion engine
-- **Gruvbox**: Color scheme
-- **Claude Code**: AI-powered coding assistant
+### Essential Plugins (~15 total)
+- **Core**: lazy.nvim, mini.nvim ecosystem
+- **LSP**: neovim/nvim-lspconfig, mason.nvim, mason-lspconfig.nvim
+- **Completion**: copilot.lua, copilot-cmp (replaces nvim-cmp)
+- **Navigation**: telescope.nvim, nvim-treesitter
+- **AI Assistant**: claudecode.nvim (official Claude Code plugin)
+- **UI**: gruvbox.nvim, which-key.nvim, vim-visual-multi
+- **Utils**: mini.comment, mini.files, mini.statusline, mini.tabline, mini.trailspace
+- **Language**: vim-helm (for Helm templates)
 
-### Language Support
-Based on hostname, different LSP servers are configured:
-- **farm-net**: Full development environment (Bash, Lua, Rust, Python, Docker, Terraform, YAML, Markdown)
-- **neovide**: Similar to farm-net but without ruff
-- **archtab**: Minimal setup (Bash, Lua, Rust)
-- **012**: Web development (Lua, HTML, CSS, Vue)
+### Language Server Support (9 servers)
+- **Bash**: bashls
+- **Lua**: lua_ls (with Neovim-specific configuration)
+- **Rust**: rust_analyzer (with clippy integration)
+- **Docker**: dockerls
+- **Terraform**: terraformls
+- **Azure Pipelines**: azure_pipelines_ls
+- **Python**: pyright
+- **YAML**: yamlls
+- **Markdown**: marksman
+
+### AI-Powered Completion
+- **Copilot.lua**: Primary completion engine
+- **Tab-based**: Simple Tab to accept suggestions
+- **Smart triggers**: Auto-trigger with debounce
+- **File type aware**: Disabled for yaml, markdown, help files
+- **Keybindings**: Meta keys for navigation, Ctrl to dismiss
+
+### Claude Code Integration
+- **Official plugin**: coder/claudecode.nvim
+- **Auto-start**: Enabled by default
+- **Comprehensive keybindings**: Full `<Leader>a*` family
+- **Diff management**: Accept/deny code changes
+- **Buffer integration**: Send files and selections
 
 ## Key Mappings
 
-### Leader Key
-- Leader: `,`
-- Local Leader: `\`
+### Leader Keys
+- **Leader**: `,` (comma)
+- **Local Leader**: `\` (backslash)
 
-### Core Mappings
-- `<Leader>w`: Write all buffers
-- `<Leader>q`: Quit all
-- `<Leader>#`: Switch to last buffer
-- `<Leader>l`: Toggle line numbers
-- `<C-b>`: Clear search highlights
-
-### File Management (Telescope)
-- `<Leader>ff`: Find files
-- `<Leader>fg`: Live grep
-- `<Leader>fb`: Show buffers
-- `<Leader>fh`: Help tags
-- `<Leader>fs`: LSP symbols
-- `<Leader>fd`: LSP definitions
-- `<Leader>fm`: Mini.files browser
-
-### LSP & Diagnostics
+### LSP & Development (4 bindings)
 - `<Leader>ca`: Code actions
-- `<Leader>d`: Show diagnostics
+- `<Leader>d`: Show diagnostics in float
 - `<Leader>n`: Next diagnostic
 - `<Leader>p`: Previous diagnostic
 
-### Formatting
-- `<Leader>fr`: Format buffer
-- `<Leader>tr`: Trim trailing spaces
-- `:Format`: Format current buffer
+### File Management - Telescope (6 bindings)
+- `<Leader>ff`: Find files (includes hidden)
+- `<Leader>fg`: Live grep (includes hidden)
+- `<Leader>fb`: Show buffers
+- `<Leader>fh`: Help tags
+- `<Leader>fs`: LSP document symbols
+- `<Leader>fd`: LSP definitions (go to definition)
 
-### Claude Code Integration
+### Buffer Management (5 bindings)
+- `<Leader>w`: Write all buffers
+- `<Leader>q`: Quit all
+- `<Leader>#`: Switch to last buffer
+- `<Leader>bn`: Next buffer
+- `<Leader>bp`: Previous buffer
+
+### Utilities (4 bindings)
+- `<Leader>l`: Toggle line numbers
+- `<C-b>`: Clear search highlights
+- `<Leader>fr`: Format buffer (LSP formatting)
+- `<Leader>tr`: Trim trailing spaces
+
+### File Browser (1 binding)
+- `<Leader>fm`: Mini.files browser
+
+### Claude Code - AI Assistant (8+ bindings)
+- `<Leader>a`: AI/Claude Code group
 - `<Leader>ac`: Toggle Claude
 - `<Leader>af`: Focus Claude
 - `<Leader>ar`: Resume Claude
 - `<Leader>aC`: Continue Claude
 - `<Leader>ab`: Add current buffer
-- `<Leader>as`: Send selection to Claude
+- `<Leader>as`: Send selection to Claude (visual mode)
 - `<Leader>aa`: Accept diff
 - `<Leader>ad`: Deny diff
 
-### Sessions
-- `<Leader>ss`: Save session
+### Copilot Completion
+- `<Tab>`: Accept copilot suggestion
+- `<M-]>`: Next suggestion
+- `<M-[>`: Previous suggestion
+- `<C-]>`: Dismiss suggestion
+- `<M-CR>`: Open copilot panel
 
-### Buffer Navigation
-- `<Leader>bn`: Next buffer
-- `<Leader>bp`: Previous buffer
+## Code Formatting
+- **LSP-based**: Uses `vim.lsp.buf.format()` for all formatting
+- **Command**: `:Format` for convenience
+- **Keybinding**: `<Leader>fr`
+- **Languages**: All LSP-supported languages
 
-## Custom Formatters
+## Session and Backup Management
+- **Backup files**: `~/.config/nvim/tmp/backup/`
+- **Undo files**: `~/.config/nvim/tmp/undo/`
+- **Swap files**: `~/.config/nvim/tmp/swap/`
+- **No automatic sessions**: Manual session management removed for simplicity
 
-The configuration includes custom formatters for various file types:
-- **Shell scripts**: `shfmt` with specific formatting options
-- **JavaScript/YAML/Markdown**: `prettier` with custom configuration
-- **Other languages**: Uses LSP formatting
+## Getting Started
 
-## Environment-Specific Features
+### First Launch
+1. **Restart Neovim completely**
+2. **Install plugins**: `:Lazy sync`
+3. **Check LSP servers**: `:Mason`
+4. **Authenticate Copilot**: `:Copilot auth`
+5. **Verify Claude Code**: Should auto-start
 
-### Neovide Support
-When running in Neovide, additional features are enabled:
-- System clipboard integration
-- Special key mappings for copy/paste
-- Mouse support
-
-### Hostname-based Configuration
-Different configurations are loaded based on hostname:
-- Different LSP servers
-- Different formatters
-- Specific plugin additions (e.g., Helm support for farm-net)
-
-## Session Management
-- Automatic session restoration when starting Neovim without files
-- Manual session saving with `<Leader>ss`
-- Sessions are saved as `.session.vim` in the current directory
-
-## Backup and Undo
-- Backup files: `~/.config/nvim/tmp/backup/`
-- Undo files: `~/.config/nvim/tmp/undo/`
-- Swap files: `~/.config/nvim/tmp/swap/`
-
-## Development Notes
-
-### LSP Configuration
-The LSP setup (`lua/config/lsp-config.lua`) is highly customized:
-- Different servers for different environments
-- Custom diagnostic configuration
-- Specific settings for each language server
-- Kubernetes YAML schema support
-
-### Auto-completion
-- Trigger: `<C-n>` (manual)
-- Navigation: `<Tab>` and `<S-Tab>`
-- Sources: LSP, snippets, buffer, path
-- No automatic completion (set to manual)
-
-### Code Formatting
-- Format on command (not on save)
-- Custom formatters for specific file types
-- Trim trailing spaces and empty lines
-
-## Troubleshooting
-
-### Common Commands
-- `:Mason`: Open Mason installer
-- `:Lazy`: Open Lazy plugin manager
-- `:LspInfo`: Show LSP information
+### Essential Commands
+- `:Lazy`: Plugin manager
+- `:Mason`: LSP server manager
+- `:LspInfo`: LSP server status
+- `:Copilot status`: Copilot status
 - `:Format`: Format current buffer
 - `:ClaudeCode`: Toggle Claude Code
 
-### File Types
-Custom file types are defined in `lua/plugins/b_custom_filetypes.lua` for:
-- Kubernetes YAML files
-- Helm templates
-- Various configuration files
+## Troubleshooting
 
-### Performance
-- Lazy loading for most plugins
-- Disabled default Neovim plugins for better performance
-- Syntax highlighting limited to 300 columns
+### LSP Issues
+- **Check servers**: `:LspInfo`
+- **Check logs**: `:LspLog`
+- **Restart LSP**: `:LspRestart`
 
-## Claude Code Integration
+### Copilot Issues
+- **Authentication**: `:Copilot auth`
+- **Status check**: `:Copilot status`
+- **Node.js required**: Ensure Node.js is installed
 
-This configuration includes the official Claude Code plugin with extensive key mappings:
-- Full chat interface integration
-- Diff management
-- Buffer and visual selection support
-- Resume and continue functionality
-- Auto-start enabled via `vim.g.claudecode_auto_setup`
+### Plugin Issues
+- **Update plugins**: `:Lazy sync`
+- **Check health**: `:checkhealth`
+- **Clean install**: `:Lazy clean` then `:Lazy sync`
 
-The configuration is designed to work seamlessly with Claude Code for AI-assisted development workflows.
+## Performance Features
+- **Lazy loading**: Most plugins load on-demand
+- **Optimized startup**: Disabled default Neovim plugins
+- **Clean configuration**: No complex conditional logic
+- **Essential only**: Removed 40%+ of original plugins
+
+## Customization Notes
+- **Modular design**: Easy to modify individual components
+- **No hostname dependencies**: Works consistently everywhere
+- **Standard patterns**: Uses conventional Neovim/Lua practices
+- **Well documented**: Clear, descriptive keybinding descriptions
+
+## Migration from Previous Setup
+If upgrading from the old complex configuration:
+1. **Backup first**: The old setup had hostname-based features
+2. **Copilot setup**: Replace nvim-cmp workflow with Copilot authentication
+3. **Removed features**: Custom formatters, session auto-restore, hostname configs
+4. **New workflow**: Tab-based completion, simplified LSP, unified configuration
+
+---
+
+**This configuration prioritizes simplicity, performance, and modern development workflows while maintaining all essential functionality.**
