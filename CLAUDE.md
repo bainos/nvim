@@ -100,6 +100,9 @@ A **simplified, modern Neovim configuration** built with Lua architecture. This 
 - `<Leader>bn`: Next buffer
 - `<Leader>bp`: Previous buffer
 
+### Mason Package Management (1 binding)
+- `<Leader>mc`: Mason cleanup (dry-run preview)
+
 ### Utilities (4 bindings)
 - `<Leader>l`: Toggle line numbers
 - `<C-b>`: Clear search highlights
@@ -171,6 +174,9 @@ A **simplified, modern Neovim configuration** built with Lua architecture. This 
 ### Essential Commands
 - `:Lazy`: Plugin manager
 - `:Mason`: LSP server manager
+- `:MasonCleanup`: Remove orphaned packages (with confirmation)
+- `:MasonCleanup --dry-run`: Preview packages that would be removed
+- `:MasonCleanup --force`: Remove without confirmation
 - `:LspInfo`: LSP server status
 - `:Copilot status`: Copilot status
 - `:Format`: Format current buffer
@@ -192,6 +198,12 @@ A **simplified, modern Neovim configuration** built with Lua architecture. This 
 - **Update plugins**: `:Lazy sync`
 - **Check health**: `:checkhealth`
 - **Clean install**: `:Lazy clean` then `:Lazy sync`
+
+### Mason Package Management
+- **Clean orphaned packages**: `:MasonCleanup --dry-run` to preview, `:MasonCleanup` to remove
+- **Reinstall removed package**: Use `:Mason` to browse and install
+- **Force cleanup**: `:MasonCleanup --force` (skip confirmation)
+- **Keybinding**: `<Leader>mc` for dry-run preview
 
 ## Performance Features
 - **Lazy loading**: Most plugins load on-demand

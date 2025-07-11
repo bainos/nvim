@@ -69,6 +69,9 @@ function M.setup()
     vim.keymap.set('n', '<Leader>bn', ':bnext<cr>', { noremap = true, silent = true, desc = 'next buf', })
     vim.keymap.set('n', '<Leader>bp', ':bprevious<cr>', { noremap = true, silent = true, desc = 'previous buf', })
 
+    -- Mason cleanup
+    vim.keymap.set('n', '<Leader>mc', ':MasonCleanup --dry-run<cr>', { noremap = true, silent = true, desc = 'Mason cleanup (dry-run)', })
+
     if vim.g.neovide then
         vim.api.nvim_echo({ { 'This is Neovide! ' .. vim.g.neovide_version, "WarningMsg" } }, true, {})
 

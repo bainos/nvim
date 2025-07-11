@@ -100,6 +100,9 @@ function M.setup()
         local extended_opts = vim.tbl_deep_extend('force', lsp_servers_opt, lsp_servers_extra_opt[server] or {})
         lspconfig[server].setup(extended_opts)
     end
+    
+    -- Setup Mason cleanup functionality
+    require('config.mason-cleanup').setup()
 end
 
 return M
