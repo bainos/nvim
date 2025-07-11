@@ -50,10 +50,12 @@ A **simplified, modern Neovim configuration** built with Lua architecture. This 
 - **Rust**: rust_analyzer (with clippy integration)
 - **Docker**: dockerls
 - **Terraform**: terraformls
-- **Azure Pipelines**: azure_pipelines_ls (for .yml files)
+- **Azure Pipelines**: azure_pipelines_ls (specialized for .yml files)
 - **Python**: pyright
-- **Helm**: helm_ls (for Helm templates and values)
+- **Helm**: helm_ls (specialized for Helm templates and values)
 - **Markdown**: marksman
+
+**LSP Architecture**: Manual configuration with proper root directory detection. Mason used only for installation management, not auto-start, to prevent conflicts and ensure filetype-specific server activation.
 
 ### AI-Powered Completion
 - **Copilot.lua**: Primary completion engine
@@ -186,8 +188,9 @@ A **simplified, modern Neovim configuration** built with Lua architecture. This 
 
 ### LSP Issues
 - **Check servers**: `:LspInfo`
-- **Check logs**: `:LspLog`
+- **Check logs**: `:LspLog` 
 - **Restart LSP**: `:LspRestart`
+- **RPC URI Errors**: Resolved via proper root directory detection and separation of Mason auto-start from manual LSP configuration
 
 ### Copilot Issues
 - **Authentication**: `:Copilot auth`
@@ -223,6 +226,14 @@ If upgrading from the old complex configuration:
 2. **Copilot setup**: Replace nvim-cmp workflow with Copilot authentication
 3. **Removed features**: Custom formatters, session auto-restore, hostname configs
 4. **New workflow**: Tab-based completion, simplified LSP, unified configuration
+
+## Recent Major Fixes
+
+### RPC URI Error Resolution (2025-01-11)
+- **Issue**: Persistent "Scheme is missing" RPC errors when opening YAML files
+- **Root Cause**: Mason-lspconfig auto-start conflicting with manual LSP configuration + missing root directory detection
+- **Solution**: Separated Mason from LSP auto-management and implemented proper root directory detection
+- **Documentation**: Complete debugging process documented in `docs/debug/COMPLETE_SOLUTION.md`
 
 ---
 
