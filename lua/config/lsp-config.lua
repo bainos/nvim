@@ -1,13 +1,7 @@
 local M = {}
 
--- Helper function to print debug messages
-local function debug(msg)
-    vim.api.nvim_echo({ { '[LSP Config]: ' .. msg, 'WarningMsg', }, }, true, {})
-end
-
 function M.setup()
-    -- DEBUG: Check what's actually starting LSP servers
-
+    
     local lsp_servers = {
         'bashls',
         'lua_ls',
@@ -20,11 +14,9 @@ function M.setup()
         'helm_ls',
     }
 
-    require 'mason-lspconfig'.setup {
-        ensure_installed = lsp_servers,
-        automatic_installation = false,
-        handlers = {},
-    }
+    -- SOLUTION: Completely separate Mason from LSP configuration
+    -- Mason is only used for installation via :Mason UI
+    -- LSP configuration is handled manually below
 
     vim.diagnostic.config {
         signs = {
@@ -49,7 +41,10 @@ function M.setup()
             debounce_text_changes = 150,
         },
         root_dir = function(fname)
-            return vim.fn.getcwd()
+            return vim.fs.dirname(vim.fs.find({'.git', '.hg', '.svn'}, {
+                path = fname,
+                upward = true
+            })[1]) or vim.fn.getcwd()
         end,
     }
 

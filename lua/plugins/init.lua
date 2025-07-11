@@ -174,7 +174,7 @@ function M.setup()
             lazy = true,
             version = false,           -- always use the latest git commit
         },
-        checker = { enabled = true, }, -- automatically check for plugin updates
+        checker = { enabled = false, }, -- DISABLED: was causing RPC URI errors with YAML files
         performance = {
             rtp = {
                 -- disable some rtp plugins
