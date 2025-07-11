@@ -44,6 +44,28 @@ function M.setup()
         { noremap = true, silent = true, desc = 'show/go to definition', })
     vim.keymap.set('n', '<Leader>fm', ':lua MiniFiles.open()<cr>',
         { noremap = true, silent = true, desc = 'file browser', })
+    
+    -- YAML workflow-specific navigation
+    vim.keymap.set('n', '<Leader>fk', function()
+        builtin.find_files({ 
+            prompt_title = "Kubernetes Manifests",
+            find_command = { 'fdfind', '--type', 'f', '--extension', 'yaml', 'resources' }
+        })
+    end, { noremap = true, silent = true, desc = 'find Kubernetes manifests', })
+    
+    vim.keymap.set('n', '<Leader>fv', function()
+        builtin.find_files({
+            prompt_title = "Helm Values",
+            find_command = { 'fdfind', '--type', 'f', '--glob', 'values*.yaml' }
+        })
+    end, { noremap = true, silent = true, desc = 'find Helm values files', })
+    
+    vim.keymap.set('n', '<Leader>fp', function()
+        builtin.find_files({
+            prompt_title = "Azure Pipelines",
+            find_command = { 'fdfind', '--type', 'f', '--extension', 'yml' }
+        })
+    end, { noremap = true, silent = true, desc = 'find Azure Pipeline files', })
     vim.keymap.set('n', '<Leader>bn', ':bnext<cr>', { noremap = true, silent = true, desc = 'next buf', })
     vim.keymap.set('n', '<Leader>bp', ':bprevious<cr>', { noremap = true, silent = true, desc = 'previous buf', })
 

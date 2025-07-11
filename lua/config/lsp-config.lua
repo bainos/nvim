@@ -2,10 +2,12 @@ local M = {}
 
 -- Helper function to print debug messages
 local function debug(msg)
-    vim.api.nvim_echo({ { "[LSP Config]: " .. msg, "WarningMsg" } }, true, {})
+    vim.api.nvim_echo({ { '[LSP Config]: ' .. msg, 'WarningMsg', }, }, true, {})
 end
 
 function M.setup()
+    -- DEBUG: Check what's actually starting LSP servers
+
     local lsp_servers = {
         'bashls',
         'lua_ls',
@@ -14,13 +16,14 @@ function M.setup()
         'terraformls',
         'azure_pipelines_ls',
         'pyright',
-        'yamlls',
-        'marksman'
+        'marksman',
+        'helm_ls',
     }
 
     require 'mason-lspconfig'.setup {
         ensure_installed = lsp_servers,
         automatic_installation = false,
+        handlers = {},
     }
 
     vim.diagnostic.config {
@@ -45,6 +48,9 @@ function M.setup()
         flags = {
             debounce_text_changes = 150,
         },
+        root_dir = function(fname)
+            return vim.fn.getcwd()
+        end,
     }
 
     local lsp_servers_extra_opt = {
@@ -74,16 +80,9 @@ function M.setup()
             filetypes = { 'helm', },
             cmd = { 'helm_ls', 'serve', },
         },
-        yamlls = {
-            filetypes = { 'yaml', 'yml' },
-            settings = {
-                yaml = {
-                    schemaStore = { enable = true },
-                    validate = true,
-                },
-            },
+        azure_pipelines_ls = {
+            filetypes = { 'yaml.azure-pipelines', },
         },
-        azure_pipelines_ls = {},
         rust_analyzer = {
             settings = {
                 ['rust-analyzer'] = {

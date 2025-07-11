@@ -84,7 +84,7 @@ function M.setup()
             'williamboman/mason.nvim',
             dependencies = { 'williamboman/mason-lspconfig.nvim', },
         },
-        { 'WhoIsSethDaniel/mason-tool-installer.nvim', },
+        -- { 'WhoIsSethDaniel/mason-tool-installer.nvim', }, -- REMOVED - not needed
         {
             'zbirenbaum/copilot.lua',
             cmd = 'Copilot',
@@ -120,7 +120,8 @@ function M.setup()
                         },
                     },
                     filetypes = {
-                        yaml = false,
+                        yaml = true,
+                        helm = true,
                         markdown = false,
                         help = false,
                         gitcommit = false,

@@ -50,16 +50,17 @@ A **simplified, modern Neovim configuration** built with Lua architecture. This 
 - **Rust**: rust_analyzer (with clippy integration)
 - **Docker**: dockerls
 - **Terraform**: terraformls
-- **Azure Pipelines**: azure_pipelines_ls
+- **Azure Pipelines**: azure_pipelines_ls (for .yml files)
 - **Python**: pyright
-- **YAML**: yamlls
+- **Helm**: helm_ls (for Helm templates and values)
 - **Markdown**: marksman
 
 ### AI-Powered Completion
 - **Copilot.lua**: Primary completion engine
 - **Tab-based**: Simple Tab to accept suggestions
 - **Smart triggers**: Auto-trigger with debounce
-- **File type aware**: Disabled for yaml, markdown, help files
+- **YAML/Helm enabled**: Active for YAML and Helm template editing
+- **File type aware**: Disabled for markdown, help files
 - **Keybindings**: Meta keys for navigation, Ctrl to dismiss
 
 ### Claude Code Integration
@@ -81,13 +82,16 @@ A **simplified, modern Neovim configuration** built with Lua architecture. This 
 - `<Leader>n`: Next diagnostic
 - `<Leader>p`: Previous diagnostic
 
-### File Management - Telescope (6 bindings)
+### File Management - Telescope (9 bindings)
 - `<Leader>ff`: Find files (includes hidden)
 - `<Leader>fg`: Live grep (includes hidden)
 - `<Leader>fb`: Show buffers
 - `<Leader>fh`: Help tags
 - `<Leader>fs`: LSP document symbols
 - `<Leader>fd`: LSP definitions (go to definition)
+- `<Leader>fk`: Find Kubernetes manifests (resources/)
+- `<Leader>fv`: Find Helm values files (values*.yaml)
+- `<Leader>fp`: Find Azure Pipeline files (*.yml)
 
 ### Buffer Management (5 bindings)
 - `<Leader>w`: Write all buffers
@@ -104,6 +108,26 @@ A **simplified, modern Neovim configuration** built with Lua architecture. This 
 
 ### File Browser (1 binding)
 - `<Leader>fm`: Mini.files browser
+
+## YAML Workflow Optimization
+
+### Specialized LSP Architecture
+- **No yamlls**: Eliminated problematic universal YAML server
+- **Dedicated servers**: Each YAML type gets its specialized LSP
+- **Copilot completion**: AI-powered suggestions for all YAML types
+- **Reliable detection**: Autocmd-based filetype assignment
+
+### File Type Detection (Autocmd-based)
+- **Azure Pipelines**: `*.yml` → `yaml.azure-pipelines` → `azure_pipelines_ls`
+- **Kubernetes**: `*/resources/*.yaml` → `yaml.kubernetes` (no LSP, Treesitter + Copilot)
+- **Helm Values**: `values*.yaml` → `yaml.helm-values` → `helm_ls`
+- **Helm Templates**: `*/templates/*.yaml`, `*/templates/*.tpl` → `helm` → `helm_ls`
+
+### Benefits
+- **Error-free**: No RPC URI errors from yamlls
+- **Fast performance**: Lightweight, specialized servers
+- **Accurate completion**: Context-aware suggestions per YAML type
+- **Maintainable**: Clean, simple configuration
 
 ### Claude Code - AI Assistant (8+ bindings)
 - `<Leader>a`: AI/Claude Code group
