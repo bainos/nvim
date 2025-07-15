@@ -70,6 +70,7 @@ luac.out
 *.hex
 
 .git/
+.vscode/
 
 __pycache__/
 
