@@ -32,6 +32,14 @@ function M.setup()
             vim.bo[ev.buf].filetype = "helm"
         end,
     })
+    
+    -- Markdown: enable word wrap
+    vim.api.nvim_create_autocmd({"BufRead", "BufNewFile"}, {
+        pattern = {"*.md", "*.markdown"},
+        callback = function(ev)
+            vim.bo[ev.buf].wrap = true
+        end,
+    })
 end
 
 return M
