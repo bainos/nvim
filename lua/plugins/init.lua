@@ -168,6 +168,16 @@ function M.setup()
             },
         },
         { 'towolf/vim-helm' },
+        -- DrumVim local plugin
+        {
+            'drumvim',
+            dir = vim.fn.stdpath('config') .. '/drumvim',
+            dependencies = { 'nvim-telescope/telescope.nvim' },
+            lazy = false,
+            config = function()
+                require('drumvim').setup()
+            end,
+        },
     }
 
     local opts = {

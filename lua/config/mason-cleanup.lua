@@ -11,7 +11,7 @@ local function get_ensure_installed_packages()
         'terraformls',
         'azure_pipelines_ls',
         'pyright',
-        'marksman',
+        'markdownlint',
         'helm_ls',
     }
     
@@ -24,7 +24,7 @@ local function get_ensure_installed_packages()
         terraformls = 'terraform-ls',
         azure_pipelines_ls = 'azure-pipelines-language-server',
         pyright = 'pyright',
-        marksman = 'marksman',
+        markdownlint = 'markdownlint',
         helm_ls = 'helm-ls',
     }
     

@@ -10,7 +10,7 @@ function M.setup()
         'terraformls',
         'azure_pipelines_ls',
         'pyright',
-        'marksman',
+        -- 'markdownlint',  -- Disabled: config not found
         'helm_ls',
     }
 
@@ -86,6 +86,9 @@ function M.setup()
                     },
                 },
             },
+        },
+        markdownlint = {
+            filetypes = { 'markdown', },
         },
     }
 
