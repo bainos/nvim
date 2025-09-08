@@ -43,11 +43,26 @@ function M.insert_drumtab(params)
   -- Get current cursor position
   local cursor_line = vim.api.nvim_win_get_cursor(0)[1]
   
-  -- Insert lines at cursor position
-  vim.api.nvim_buf_set_lines(0, cursor_line - 1, cursor_line - 1, false, drumtab_lines)
+  -- Insert lines at cursor position + 1 (leave blank line)
+  vim.api.nvim_buf_set_lines(0, cursor_line, cursor_line, false, drumtab_lines)
   
-  -- Move cursor to end of inserted content
-  vim.api.nvim_win_set_cursor(0, {cursor_line + #drumtab_lines - 1, 0})
+  -- Position cursor at first rest of first drum line
+  -- First line is Time: markers, second line is first drum piece
+  if #drumtab_lines >= 2 then
+    local first_drum_line = drumtab_lines[2]
+    local first_rest_col = first_drum_line:find('-')
+    
+    if first_rest_col then
+      -- Move to first rest position (convert to 0-based column)
+      vim.api.nvim_win_set_cursor(0, {cursor_line + 2, first_rest_col - 1})
+    else
+      -- Fallback: move to start of first drum line
+      vim.api.nvim_win_set_cursor(0, {cursor_line + 2, 0})
+    end
+  else
+    -- Fallback: move to start of inserted content
+    vim.api.nvim_win_set_cursor(0, {cursor_line + 1, 0})
+  end
 end
 
 -- Create new buffer with drumtab

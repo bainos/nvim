@@ -28,7 +28,7 @@ vim.api.nvim_create_user_command('DrumTab', function(opts)
       local ui = require('drumvim.ui')
       ui.show_template_picker(function(template_params)
         if template_params then
-          drumvim.new_drumtab_buffer(template_params)
+          drumvim.insert_drumtab(template_params)
         end
       end)
       return
@@ -44,8 +44,8 @@ vim.api.nvim_create_user_command('DrumTab', function(opts)
     end
     if args[5] then params.measures = tonumber(args[5]) end
     
-    -- Create new drumtab buffer
-    drumvim.new_drumtab_buffer(params)
+    -- Insert drumtab at cursor position
+    drumvim.insert_drumtab(params)
   else
     print("DrumVim: Unknown subcommand '" .. (subcmd or "") .. "'. Use: :DrumTab new [params...]")
   end
@@ -71,20 +71,3 @@ end, {
   end
 })
 
--- Command: DrumTabInsert - insert drumtab at cursor
-vim.api.nvim_create_user_command('DrumTabInsert', function(opts)
-  local args = opts.fargs
-  local params = {}
-  
-  -- Parse same as DrumTab new but insert instead
-  if args[1] then params.time_sig = args[1] end
-  if args[2] then params.subdivision = args[2] end
-  if args[3] then 
-    params.kit_pieces = vim.split(args[3], ",", {trimempty = true})
-  end
-  if args[4] then params.measures = tonumber(args[4]) end
-  
-  drumvim.insert_drumtab(params)
-end, {
-  nargs = "*"
-})
