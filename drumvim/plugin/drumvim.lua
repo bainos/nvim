@@ -12,12 +12,16 @@ local drumvim = require('drumvim')
 -- Initialize plugin with default config
 drumvim.setup()
 
--- Command: DrumTab new [time_sig] [subdivision] [kit_pieces] [measures]
+-- Command: DrumTab <subcommand> [args...]
+-- Subcommands:
+--   new [time_sig] [subdivision] [kit_pieces] [measures] - Create drumtab template
+--   extract                                              - Extract drumtab blocks from document  
+--   ly                                                   - Generate LilyPond from drumtab blocks
 -- Examples:
 --   :DrumTab new                          (shows template picker)
---   :DrumTab new 4/4
---   :DrumTab new 4/4 16th
---   :DrumTab new 4/4 16th HH,SD,BD 4
+--   :DrumTab new 4/4 16th HH,SD,BD 4     (direct parameters)
+--   :DrumTab extract                      (parse current buffer)
+--   :DrumTab ly                           (full pipeline to LilyPond)
 vim.api.nvim_create_user_command('DrumTab', function(opts)
   local args = opts.fargs
   local subcmd = args[1]
@@ -46,8 +50,60 @@ vim.api.nvim_create_user_command('DrumTab', function(opts)
     
     -- Insert drumtab at cursor position
     drumvim.insert_drumtab(params)
+    
+  elseif subcmd == "extract" then
+    -- Extract drumtab blocks from current buffer using Step 0
+    local parsing = require('drumvim.parsing')
+    
+    -- Get current buffer content
+    local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+    local document_text = table.concat(lines, '\n')
+    
+    -- Run Step 0 parsing
+    local result = parsing.step0.parse_document(document_text)
+    
+    if result and result.blocks and #result.blocks > 0 then
+      print("DrumVim: Extracted " .. #result.blocks .. " drumtab block(s)")
+      
+      -- Write to temp file for inspection
+      local temp_file = vim.fn.tempname() .. "_drumtab_blocks.json"
+      local output_module = require('drumvim.parsing.step0_output')
+      if output_module.write_to_file(result, temp_file) then
+        print("DrumVim: Output written to " .. temp_file)
+      end
+    else
+      print("DrumVim: No drumtab blocks found in current buffer")
+    end
+    
+  elseif subcmd == "ly" then
+    -- Generate LilyPond from drumtab blocks (Step 0 for now, more steps later)
+    local parsing = require('drumvim.parsing')
+    
+    -- Get current buffer content  
+    local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+    local document_text = table.concat(lines, '\n')
+    
+    -- Run Step 0 parsing
+    local result = parsing.step0.parse_document(document_text)
+    
+    if result and result.blocks and #result.blocks > 0 then
+      print("DrumVim: Processing " .. #result.blocks .. " drumtab block(s) for LilyPond generation...")
+      
+      -- Write to temp file
+      local temp_file = vim.fn.tempname() .. "_drumtab_blocks.json" 
+      local output_module = require('drumvim.parsing.step0_output')
+      if output_module.write_to_file(result, temp_file) then
+        print("DrumVim: Step 0 complete - " .. temp_file)
+        print("DrumVim: TODO - Steps 1-8 not implemented yet")
+      end
+    else
+      print("DrumVim: No drumtab blocks found in current buffer")
+    end
+    
   else
-    print("DrumVim: Unknown subcommand '" .. (subcmd or "") .. "'. Use: :DrumTab new [params...]")
+    local valid_commands = {"new", "extract", "ly"}
+    print("DrumVim: Unknown subcommand '" .. (subcmd or "") .. "'")
+    print("DrumVim: Valid subcommands: " .. table.concat(valid_commands, ", "))
   end
 end, {
   nargs = "*",
@@ -56,7 +112,7 @@ end, {
     
     if #args == 2 then
       -- First argument: subcommands
-      return {"new"}
+      return {"new", "extract", "ly"}
     elseif #args == 3 then
       -- Second argument: time signatures
       local time_sig = require('drumvim.time_signature')
