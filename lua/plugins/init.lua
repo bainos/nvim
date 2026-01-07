@@ -1,15 +1,12 @@
 local M = {}
 
 function M.setup()
-    local hostname = require 'settings'.hostname()
     local plugins = {
         { 'folke/lazy.nvim',             version = '*', },
         { 'echasnovski/mini.nvim',       version = '*',   lazy = false, },
         { 'echasnovski/mini.comment',    version = '*',   lazy = false, },
         { 'echasnovski/mini.files',      version = '*',   lazy = false, },
-        -- { 'echasnovski/mini.pairs',      version = '*',   event = 'InsertEnter', },
         { 'echasnovski/mini.statusline', version = '*',   event = 'VeryLazy', },
-        -- { 'echasnovski/mini.surround',   version = '*',   event = 'InsertEnter', },
         { 'echasnovski/mini.tabline',    version = '*',   lazy = false, },
         { 'echasnovski/mini.trailspace', version = '*',   lazy = false, },
         { 'mg979/vim-visual-multi',      lazy = false, },
@@ -19,36 +16,42 @@ function M.setup()
             event = 'VeryLazy',
             opts = {
                 preset = 'helix',
-                delay = function()
-                    return 1000
-                end,
+                delay = function() return 1000 end,
             },
             keys = {
                 {
                     '<leader>?',
-                    function()
-                        require 'which-key'.show { global = false, }
-                    end,
+                    function() require 'which-key'.show { global = false, } end,
                     desc = 'Buffer Local Keymaps (which-key)',
                 },
             },
         },
-        -- { 'rcarriga/nvim-notify', },
-        -- {
-        --     'folke/noice.nvim',
-        --     event = 'VeryLazy',
-        --     opts = {},
-        --     dependencies = {
-        --         'MunifTanjim/nui.nvim', 'rcarriga/nvim-notify', },
-        -- },
         {
             'nvim-telescope/telescope.nvim',
             dependencies = {
                 'nvim-lua/plenary.nvim',
                 'nvim-tree/nvim-web-devicons',
             },
+            config = function()
+                require('telescope').setup({
+                    defaults = {
+                        prompt_prefix = "  ",
+                        selection_caret = " ",
+                        path_display = { "truncate" },
+                    },
+                    pickers = {
+                        find_files = {
+                            hidden = true,
+                        },
+                        live_grep = {
+                            additional_args = function()
+                                return {"--hidden"}
+                            end,
+                        },
+                    },
+                })
+            end,
         },
-        -- -- highlighting
         {
             'andymass/vim-matchup',
             lazy = false,
@@ -66,78 +69,112 @@ function M.setup()
                     modules = {},
                     ignore_install = {},
                     auto_install = true,
-                    ensure_installed = { 'bash', 'lua', 'vim', 'vimdoc', 'rust', 'yaml', 'python', 'hcl', 'markdown', 'json', 'dockerfile', },
+                    ensure_installed = {
+                        'bash', 'lua', 'vim', 'vimdoc', 'rust', 'yaml', 'python', 'hcl', 'markdown', 'json', 'dockerfile',
+                    },
                     sync_install = true,
                     highlight = { enable = true, },
                     indent = { enable = true, },
-                    matchup = {
-                        enable = true, -- mandatory, false will disable the whole extension
-                    },
+                    matchup = { enable = true, },
                 }
             end,
         },
-        -- -- LSP
         { 'neovim/nvim-lspconfig', },
         {
             'williamboman/mason.nvim',
             dependencies = { 'williamboman/mason-lspconfig.nvim', },
         },
-        { 'WhoIsSethDaniel/mason-tool-installer.nvim', },
-        -- -- completion
+        -- { 'WhoIsSethDaniel/mason-tool-installer.nvim', }, -- REMOVED - not needed
         {
-            'hrsh7th/nvim-cmp',
+            'zbirenbaum/copilot.lua',
+            cmd = 'Copilot',
             event = 'InsertEnter',
-            dependencies = {
-                'hrsh7th/cmp-nvim-lsp',
-                'hrsh7th/cmp-buffer',
-                'hrsh7th/cmp-path',
-                'hrsh7th/cmp-cmdline',
-                'saadparwaiz1/cmp_luasnip',
-                'L3MON4D3/LuaSnip',
+            config = function()
+                require('copilot').setup({
+                    panel = {
+                        enabled = true,
+                        auto_refresh = false,
+                        keymap = {
+                            jump_prev = "[[",
+                            jump_next = "]]",
+                            accept = "<CR>",
+                            refresh = "gr",
+                            open = "<M-CR>"
+                        },
+                        layout = {
+                            position = "bottom",
+                            ratio = 0.4
+                        },
+                    },
+                    suggestion = {
+                        enabled = true,
+                        auto_trigger = true,
+                        debounce = 75,
+                        keymap = {
+                            accept = "<M-l>",
+                            accept_word = false,
+                            accept_line = false,
+                            next = "<M-]>",
+                            prev = "<M-[>",
+                            dismiss = "<C-]>",
+                        },
+                    },
+                    filetypes = {
+                        yaml = true,
+                        helm = true,
+                        markdown = false,
+                        help = false,
+                        gitcommit = false,
+                        gitrebase = false,
+                        hgcommit = false,
+                        svn = false,
+                        cvs = false,
+                        ["."] = false,
+                    },
+                    copilot_node_command = 'node',
+                    server_opts_overrides = {},
+                })
+            end,
+        },
+        {
+            'zbirenbaum/copilot-cmp',
+            dependencies = { 'zbirenbaum/copilot.lua' },
+            config = function()
+                require('copilot_cmp').setup()
+            end,
+        },
+        {
+            'coder/claudecode.nvim',
+            dependencies = { 'folke/snacks.nvim', },
+            config = true,
+            keys = {
+                { '<leader>a',  nil,                              desc = 'AI/Claude Code', },
+                { '<leader>ac', '<cmd>ClaudeCode<cr>',            desc = 'Toggle Claude', },
+                { '<leader>af', '<cmd>ClaudeCodeFocus<cr>',       desc = 'Focus Claude', },
+                { '<leader>ar', '<cmd>ClaudeCode --resume<cr>',   desc = 'Resume Claude', },
+                { '<leader>aC', '<cmd>ClaudeCode --continue<cr>', desc = 'Continue Claude', },
+                { '<leader>ab', '<cmd>ClaudeCodeAdd %<cr>',       desc = 'Add current buffer', },
+                { '<leader>as', '<cmd>ClaudeCodeSend<cr>',        mode = 'v',                  desc = 'Send to Claude', },
+                {
+                    '<leader>as',
+                    '<cmd>ClaudeCodeTreeAdd<cr>',
+                    desc = 'Add file',
+                    ft = { 'NvimTree', 'neo-tree', 'oil', },
+                },
+                -- Diff management
+                { '<leader>aa', '<cmd>ClaudeCodeDiffAccept<cr>', desc = 'Accept diff', },
+                { '<leader>ad', '<cmd>ClaudeCodeDiffDeny<cr>',   desc = 'Deny diff', },
             },
         },
-        -- {
-        --     'hedyhli/outline.nvim',
-        --     lazy = true,
-        --     cmd = { 'Outline', 'OutlineOpen', },
-        --     keys = { -- Example mapping to toggle outline
-        --         { '<leader>o', '<cmd>Outline<CR>', desc = 'Toggle outline', },
-        --
-        --     },
-        --
-        --     opts = {
-        --         -- Your setup opts here
-        --     },
-        -- },
+        { 'towolf/vim-helm' },
     }
-
-    -- helm
-    if string.find(hostname, 'farm-net', 1, true) then
-        table.insert(plugins, 'towolf/vim-helm')
-    end
-
-    if vim.g.neovide then
-        table.insert(plugins, 'towolf/vim-helm')
-    end
-
-    -- Flutter/Dart
-    if string.find(hostname, '012') then
-        table.insert(plugins, {
-            'akinsho/flutter-tools.nvim',
-            --lazy = false,
-            dependencies = {
-                'nvim-lua/plenary.nvim',
-            },
-            config = true,
-        })
-    end
 
     local opts = {
         defaults = {
             lazy = true,
             version = false,           -- always use the latest git commit
         },
-        checker = { enabled = true, }, -- automatically check for plugin updates
+        checker = { enabled = false, }, -- DISABLED: was causing RPC URI errors with YAML files
         performance = {
             rtp = {
                 -- disable some rtp plugins
@@ -158,47 +195,31 @@ function M.setup()
     require 'lazy'.setup(plugins, opts)
     require 'mason'.setup()
 
-    require 'mini.comment'.setup()
-    require 'mini.files'.setup
-    {
-        mappings = {
-            close       = 'q',
-            go_in       = '<Right>',
-            go_in_plus  = 'L',
-            go_out      = '<Left>',
-            go_out_plus = 'H',
-            reset       = '<BS>',
-            reveal_cwd  = '@',
-            show_help   = 'g?',
-            synchronize = '=',
-            trim_left   = '<',
-            trim_right  = '>',
-        },
-    }
+    local function setup_mini_plugins()
+        require 'mini.comment'.setup()
+        require 'mini.files'.setup {
+            mappings = {
+                close       = 'q',
+                go_in       = '<Right>',
+                go_in_plus  = 'L',
+                go_out      = '<Left>',
+                go_out_plus = 'H',
+                reset       = '<BS>',
+                reveal_cwd  = '@',
+                show_help   = 'g?',
+                synchronize = '=',
+                trim_left   = '<',
+                trim_right  = '>',
+            },
+        }
+        require 'mini.statusline'.setup()
+        require 'mini.trailspace'.setup()
+        require 'mini.tabline'.setup()
+    end
 
-    -- require 'mini.pairs'.setup()
-    require 'mini.statusline'.setup()
-    require 'mini.surround'.setup()
-    require 'mini.trailspace'.setup()
-    require 'mini.tabline'.setup()
+    setup_mini_plugins()
+    vim.g.claudecode_auto_setup = { auto_start = true }
 
-    -- require 'nvim-treesitter.configs'.setup {
-    --     matchup = {
-    --         enable = true,     -- mandatory, false will disable the whole extension
-    --     },
-    -- }
-
-    ---@diagnostic disable-next-line: undefined-field
-    -- require 'notify'.setup {
-    --     stages = 'static',
-    --     render = 'minimal',
-    -- }
-
-    -- b_plugins
-    require 'plugins.b_custom_filetypes'.setup()
-    require 'plugins.b_formatter'.setup()
-    require 'plugins.b_session'.setup()
-    -- require 'plugins.b_yank_mouse_restore'.setup()
 end
 
 return M

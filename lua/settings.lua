@@ -4,20 +4,6 @@ function M.home()
     return os.getenv 'HOME' or os.getenv 'LOCALAPPDATA'
 end
 
-function M.hostname()
-    return os.getenv 'HOST'
-        or os.getenv 'HOSTNAME'
-        or os.getenv 'COMPUTERNAME'
-        or 'UNKOWN'
-end
-
-function M.os_type()
-    if os.getenv 'TERMUX_VERSION' then
-        return 'termux'
-    else
-        return jit.os:lower()
-    end
-end
 
 function M.setup()
     vim.g.mapleader = ','
@@ -35,9 +21,8 @@ function M.setup()
     vim.opt.backspace = 'indent,eol,start' -- backspace works on every char in insert mode
     vim.opt.completeopt = 'menu,menuone,noselect'
     vim.opt.history = 1000
-    if M.os_type == 'linux' then vim.opt.dictionary = '/usr/share/dict/words' end
+    vim.opt.dictionary = '/usr/share/dict/words'
     vim.opt.startofline = true
-    vim.opt.mouse       = nil
     -- fix '#' comment indentation
     -- https://unix.stackexchange.com/questions/106526/stop-vim-from-messing-up-my-indentation-on-comments
     -- http://neovim.io/doc/user/indent.html
