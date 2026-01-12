@@ -1,0 +1,56 @@
+{
+  // Markdownlint-cli2 configuration
+  // Comprehensive Markdown linting with 100-character line limit
+  "config": {
+    // Line length rule - 100 characters max
+    "MD013": {
+      "line_length": 100,
+      "code_blocks": true,
+      "tables": true,
+      "headings": true,
+      "strict": false,
+      "stern": false
+    },
+    
+    // Header rules
+    "MD003": { "style": "atx" },           // ATX-style headers (# ## ###)
+    "MD022": true,                         // Headers should be surrounded by blank lines
+    "MD025": true,                         // Multiple top level headers in the same document
+    "MD041": false,                        // Allow files not to start with h1
+    
+    // List rules
+    "MD004": { "style": "dash" },          // Unordered list style (use -)
+    "MD007": { "indent": 2 },              // Unordered list indentation (2 spaces)
+    "MD030": { "ul_single": 1, "ul_multi": 1, "ol_single": 1, "ol_multi": 1 },
+    
+    // Spacing and whitespace
+    "MD009": { "br_spaces": 2 },           // Trailing spaces (allow 2 for line breaks)
+    "MD010": true,                         // Hard tabs
+    "MD012": { "maximum": 1 },             // Multiple consecutive blank lines
+    "MD018": true,                         // No space after hash on atx style header
+    "MD019": true,                         // Multiple spaces after hash on atx style header
+    "MD023": true,                         // Headers must start at the beginning of the line
+    
+    // Links and images
+    "MD034": false,                        // Allow bare URLs (sometimes needed)
+    "MD051": false,                        // Allow duplicate link fragments
+    
+    // Code blocks
+    "MD040": true,                         // Fenced code blocks should have a language specified
+    "MD046": { "style": "fenced" },        // Code block style (use fences, not indentation)
+    
+    // Emphasis
+    "MD036": false,                        // Don't enforce emphasis instead of headers (allow emphasis)
+    
+    // HTML
+    "MD033": false                         // Allow inline HTML (sometimes necessary)
+  },
+  
+  // Ignore patterns
+  "ignores": [
+    "**/node_modules/**",
+    "**/.git/**",
+    "**/tmp/**",
+    "**/backup/**"
+  ]
+}

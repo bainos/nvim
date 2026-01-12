@@ -2,42 +2,19 @@ local M = {}
 
 function M.setup()
     local plugins = {
-        { 'folke/lazy.nvim',             version = '*', },
-        { 'echasnovski/mini.nvim',       version = '*',   lazy = false, },
-        { 'echasnovski/mini.comment',    version = '*',   lazy = false, },
-        { 'echasnovski/mini.files',      version = '*',   lazy = false, },
-        { 'echasnovski/mini.statusline', version = '*',   event = 'VeryLazy', },
-        { 'echasnovski/mini.tabline',    version = '*',   lazy = false, },
-        { 'echasnovski/mini.trailspace', version = '*',   lazy = false, },
-        { 'mg979/vim-visual-multi',      lazy = false, },
-        { 'ellisonleao/gruvbox.nvim',    priority = 1000, },
-        {
-            'folke/which-key.nvim',
-            event = 'VeryLazy',
-            opts = {
-                preset = 'helix',
-                delay = function() return 1000 end,
-            },
-            keys = {
-                {
-                    '<leader>?',
-                    function() require 'which-key'.show { global = false, } end,
-                    desc = 'Buffer Local Keymaps (which-key)',
-                },
-            },
-        },
+        { 'ellisonleao/gruvbox.nvim', priority = 1000 },
         {
             'nvim-telescope/telescope.nvim',
-            dependencies = {
-                'nvim-lua/plenary.nvim',
-                'nvim-tree/nvim-web-devicons',
-            },
+            tag = '0.1.8',
+            dependencies = { 'nvim-lua/plenary.nvim' },
             config = function()
-                require('telescope').setup({
+                require 'telescope'.setup {
                     defaults = {
-                        prompt_prefix = "  ",
-                        selection_caret = " ",
-                        path_display = { "truncate" },
+                        mappings = {
+                            n = {
+                                ['<C-d>'] = require 'telescope.actions'.delete_buffer
+                            }
+                        },
                     },
                     pickers = {
                         find_files = {
@@ -49,99 +26,95 @@ function M.setup()
                             end,
                         },
                     },
-                })
-            end,
-        },
-        {
-            'andymass/vim-matchup',
-            lazy = false,
-            config = function()
-                vim.g.matchup_matchparen_offscreen = { method = 'popup', }
-            end,
-        },
-        {
-            'nvim-treesitter/nvim-treesitter',
-            dependencies = { 'andymass/vim-matchup', },
-            build = ':TSUpdate',
-            config = function()
-                local configs = require 'nvim-treesitter.configs'
-                configs.setup {
-                    modules = {},
-                    ignore_install = {},
-                    auto_install = true,
-                    ensure_installed = {
-                        'bash', 'lua', 'vim', 'vimdoc', 'rust', 'yaml', 'python', 'hcl', 'markdown', 'json', 'dockerfile',
-                    },
-                    sync_install = true,
-                    highlight = { enable = true, },
-                    indent = { enable = true, },
-                    matchup = { enable = true, },
                 }
             end,
         },
-        { 'neovim/nvim-lspconfig', },
         {
-            'williamboman/mason.nvim',
-            dependencies = { 'williamboman/mason-lspconfig.nvim', },
-        },
-        -- { 'WhoIsSethDaniel/mason-tool-installer.nvim', }, -- REMOVED - not needed
-        {
-            'zbirenbaum/copilot.lua',
-            cmd = 'Copilot',
-            event = 'InsertEnter',
+            'yetone/avante.nvim',
+            event = 'VeryLazy',
+            lazy = false,
+            version = false,
+            build = 'make BUILD_FROM_SOURCE=true',
+            dependencies = {
+                'nvim-lua/plenary.nvim',
+                'MunifTanjim/nui.nvim',
+                'MeanderingProgrammer/render-markdown.nvim',
+                'nvim-tree/nvim-web-devicons',
+            },
             config = function()
-                require('copilot').setup({
-                    panel = {
-                        enabled = true,
-                        auto_refresh = false,
-                        keymap = {
-                            jump_prev = "[[",
-                            jump_next = "]]",
-                            accept = "<CR>",
-                            refresh = "gr",
-                            open = "<M-CR>"
-                        },
-                        layout = {
-                            position = "bottom",
-                            ratio = 0.4
+                require('avante').setup({
+                    provider = 'bedrock',
+                    auto_suggestions = true,
+                    providers = {
+                        bedrock = {
+                            aws_profile = 'mxm-engineers-interns',
+                            model = 'us.anthropic.claude-haiku-4-5-20251001-v1:0',
+                            aws_region = 'us-east-1',
                         },
                     },
-                    suggestion = {
-                        enabled = true,
-                        auto_trigger = true,
-                        debounce = 75,
-                        keymap = {
-                            accept = "<M-l>",
-                            accept_word = false,
-                            accept_line = false,
-                            next = "<M-]>",
-                            prev = "<M-[>",
-                            dismiss = "<C-]>",
+                    behaviour = {
+                        auto_suggestions = true,
+                        auto_set_highlight_group = true,
+                        support_paste_from_clipboard = true,
+                    },
+                    mappings = {
+                        ask = '<leader>ca',
+                        edit = '<leader>ce',
+                        refresh = '<leader>cr',
+                        suggestion = {
+                            accept = '<Tab>',
+                            next = '<M-]>',
+                            prev = '<M-[>',
+                            dismiss = '<C-]>',
                         },
                     },
-                    filetypes = {
-                        yaml = true,
-                        helm = true,
-                        markdown = false,
-                        help = false,
-                        gitcommit = false,
-                        gitrebase = false,
-                        hgcommit = false,
-                        svn = false,
-                        cvs = false,
-                        ["."] = false,
+                    hints = { enabled = true },
+                    windows = {
+                        position = 'right',
+                        wrap = true,
+                        width = 30,
                     },
-                    copilot_node_command = 'node',
-                    server_opts_overrides = {},
                 })
             end,
-        },
-        {
-            'zbirenbaum/copilot-cmp',
-            dependencies = { 'zbirenbaum/copilot.lua' },
-            config = function()
-                require('copilot_cmp').setup()
-            end,
+            keys = {
+                {
+                    '<Tab>',
+                    function()
+                        if require('avante.suggestion').is_visible() then
+                            return require('avante.suggestion').accept()
+                        else
+                            return '<Tab>'
+                        end
+                    end,
+                    mode = 'i',
+                    expr = true,
+                    desc = 'Accept Avante suggestion',
+                },
+                {
+                    '<leader>cc',
+                    function()
+                        require('avante.api').ask()
+                    end,
+                    mode = { 'n', 'v' },
+                    desc = 'Avante: Ask AI',
+                },
+                {
+                    '<leader>ce',
+                    function()
+                        require('avante.api').edit()
+                    end,
+                    mode = { 'n', 'v' },
+                    desc = 'Avante: Edit selection',
+                },
+                {
+                    '<leader>cr',
+                    function()
+                        require('avante.api').refresh()
+                    end,
+                    mode = 'n',
+                    desc = 'Avante: Refresh',
+                },
+            },
         },
         {
             'coder/claudecode.nvim',
@@ -166,60 +139,99 @@ function M.setup()
                 { '<leader>ad', '<cmd>ClaudeCodeDiffDeny<cr>',   desc = 'Deny diff', },
             },
         },
-        { 'towolf/vim-helm' },
+        {
+            'andymass/vim-matchup',
+            lazy = false,
+            config = function()
+                vim.g.matchup_matchparen_offscreen = { method = 'popup', }
+            end,
+        },
+        {
+            'nvim-treesitter/nvim-treesitter',
+            dependencies = { 'andymass/vim-matchup', },
+            build = ':TSUpdate',
+            config = function()
+                local configs = require 'nvim-treesitter.configs'
+                configs.setup {
+                    modules = {},
+                    ignore_install = {},
+                    auto_install = true,
+                    ensure_installed = {
+                        'c',
+                        'lua',
+                        'vim',
+                        'vimdoc',
+                        'query',
+                        'markdown',
+                        'markdown_inline',
+                    },
+                    sync_install = false,
+                    highlight = {
+                        enable = true,
+                        additional_vim_regex_highlighting = false,
+                    },
+                    matchup = {
+                        enable = true,
+                    },
+                }
+            end,
+        },
+        { 'williamboman/mason.nvim', },
+        {
+            'echasnovski/mini.nvim',
+            version = false,
+            config = function()
+                require 'mini.comment'.setup()
+                require 'mini.files'.setup {
+                    mappings = {
+                        close       = 'q',
+                        go_in       = '<Right>',
+                        go_in_plus  = 'L',
+                        go_out      = '<Left>',
+                        go_out_plus = 'H',
+                        reset       = '<BS>',
+                        reveal_cwd  = '@',
+                        show_help   = 'g?',
+                        synchronize = '=',
+                        trim_left   = '<',
+                        trim_right  = '>',
+                    },
+                    options = {
+                        permanent_delete = true,
+                    },
+                }
+                require 'mini.statusline'.setup()
+                require 'mini.tabline'.setup()
+                require 'mini.trailspace'.setup()
+            end,
+        },
+        { 'nvim-tree/nvim-web-devicons', lazy = true },
+        {
+            'folke/which-key.nvim',
+            event = 'VeryLazy',
+            opts = {},
+        },
+        { 'mg979/vim-visual-multi', branch = 'master' },
+        'nvim-lua/plenary.nvim',
+        'folke/snacks.nvim',
     }
 
     local opts = {
-        defaults = {
-            lazy = true,
-            version = false,           -- always use the latest git commit
-        },
-        checker = { enabled = false, }, -- DISABLED: was causing RPC URI errors with YAML files
         performance = {
-            rtp = {
-                -- disable some rtp plugins
-                disabled_plugins = {
-                    'gzip',
-                    'matchit',
-                    'matchparen',
-                    'netrwPlugin',
-                    'tarPlugin',
-                    'tohtml',
-                    'tutor',
-                    'zipPlugin',
-                },
+            disabled_plugins = {
+                'gzip',
+                'matchit',
+                'netrwPlugin',
+                'rplugin',
+                'tarPlugin',
+                'tohtml',
+                'tutor',
+                'zipPlugin',
             },
         },
     }
 
     require 'lazy'.setup(plugins, opts)
-    require 'mason'.setup()
-
-    local function setup_mini_plugins()
-        require 'mini.comment'.setup()
-        require 'mini.files'.setup {
-            mappings = {
-                close       = 'q',
-                go_in       = '<Right>',
-                go_in_plus  = 'L',
-                go_out      = '<Left>',
-                go_out_plus = 'H',
-                reset       = '<BS>',
-                reveal_cwd  = '@',
-                show_help   = 'g?',
-                synchronize = '=',
-                trim_left   = '<',
-                trim_right  = '>',
-            },
-        }
-        require 'mini.statusline'.setup()
-        require 'mini.trailspace'.setup()
-        require 'mini.tabline'.setup()
-    end
-
-    setup_mini_plugins()
-    vim.g.claudecode_auto_setup = { auto_start = true }
-
 end
 
-return M
+return { setup = M.setup }
