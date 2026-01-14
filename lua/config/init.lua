@@ -1,6 +1,7 @@
 local M = {}
 
 function M.setup()
+    require 'config.aws-credentials'.setup()
     require 'config.themes'.setup()
     require 'config.nvim-treesitter'.setup()
     require 'config.lsp-installer'.setup()

@@ -1,6 +1,13 @@
 local M = {}
 
 function M.setup()
+
+    require('config.aws-credentials').setup()
+    local bedrock_keys = require('config.aws-credentials').get_bedrock_keys()
+    if bedrock_keys then
+        vim.env.BEDROCK_KEYS = bedrock_keys
+    end
+
     local plugins = {
         { 'ellisonleao/gruvbox.nvim', priority = 1000 },
         {
@@ -47,7 +54,7 @@ function M.setup()
                     auto_suggestions = true,
                     providers = {
                         bedrock = {
-                            aws_profile = 'mxm-engineers-interns',
+                            -- aws_profile = 'default',
                             model = 'us.anthropic.claude-haiku-4-5-20251001-v1:0',
                             aws_region = 'us-east-1',
                         },
@@ -78,19 +85,6 @@ function M.setup()
             end,
             keys = {
                 {
-                    '<Tab>',
-                    function()
-                        if require('avante.suggestion').is_visible() then
-                            return require('avante.suggestion').accept()
-                        else
-                            return '<Tab>'
-                        end
-                    end,
-                    mode = 'i',
-                    expr = true,
-                    desc = 'Accept Avante suggestion',
-                },
-                {
                     '<leader>cc',
                     function()
                         require('avante.api').ask()
@@ -114,29 +108,6 @@ function M.setup()
                     mode = 'n',
                     desc = 'Avante: Refresh',
                 },
-            },
-        },
-        {
-            'coder/claudecode.nvim',
-            dependencies = { 'folke/snacks.nvim', },
-            config = true,
-            keys = {
-                { '<leader>a',  nil,                              desc = 'AI/Claude Code', },
-                { '<leader>ac', '<cmd>ClaudeCode<cr>',            desc = 'Toggle Claude', },
-                { '<leader>af', '<cmd>ClaudeCodeFocus<cr>',       desc = 'Focus Claude', },
-                { '<leader>ar', '<cmd>ClaudeCode --resume<cr>',   desc = 'Resume Claude', },
-                { '<leader>aC', '<cmd>ClaudeCode --continue<cr>', desc = 'Continue Claude', },
-                { '<leader>ab', '<cmd>ClaudeCodeAdd %<cr>',       desc = 'Add current buffer', },
-                { '<leader>as', '<cmd>ClaudeCodeSend<cr>',        mode = 'v',                  desc = 'Send to Claude', },
-                {
-                    '<leader>as',
-                    '<cmd>ClaudeCodeTreeAdd<cr>',
-                    desc = 'Add file',
-                    ft = { 'NvimTree', 'neo-tree', 'oil', },
-                },
-                -- Diff management
-                { '<leader>aa', '<cmd>ClaudeCodeDiffAccept<cr>', desc = 'Accept diff', },
-                { '<leader>ad', '<cmd>ClaudeCodeDiffDeny<cr>',   desc = 'Deny diff', },
             },
         },
         {

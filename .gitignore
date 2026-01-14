@@ -1,6 +1,7 @@
 # custom
 lazy-lock.json
 .vscode
+aws-auth.json
 
 # VIM Swap
 [._]*.s[a-v][a-z]
