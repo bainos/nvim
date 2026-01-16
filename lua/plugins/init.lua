@@ -1,7 +1,6 @@
 local M = {}
 
 function M.setup()
-
     require('config.aws-credentials').setup()
     local bedrock_keys = require('config.aws-credentials').get_bedrock_keys()
     if bedrock_keys then
@@ -10,6 +9,13 @@ function M.setup()
 
     local plugins = {
         { 'ellisonleao/gruvbox.nvim', priority = 1000 },
+        {
+            'bedrock_ghost',
+            dir = vim.fn.stdpath('config') .. '/lua/bedrock_ghost',
+            config = function()
+                require('bedrock_ghost').setup()
+            end,
+        },
         {
             'nvim-telescope/telescope.nvim',
             tag = '0.1.8',
@@ -38,6 +44,7 @@ function M.setup()
         },
         {
             'yetone/avante.nvim',
+            enabled = false, -- Disabled: using custom bedrock_ghost plugin
             event = 'VeryLazy',
             lazy = false,
             version = false,
@@ -119,35 +126,10 @@ function M.setup()
         },
         {
             'nvim-treesitter/nvim-treesitter',
-            dependencies = { 'andymass/vim-matchup', },
+            dependencies = { 'andymass/vim-matchup' },
             build = ':TSUpdate',
-            config = function()
-                local configs = require 'nvim-treesitter.configs'
-                configs.setup {
-                    modules = {},
-                    ignore_install = {},
-                    auto_install = true,
-                    ensure_installed = {
-                        'c',
-                        'lua',
-                        'vim',
-                        'vimdoc',
-                        'query',
-                        'markdown',
-                        'markdown_inline',
-                    },
-                    sync_install = false,
-                    highlight = {
-                        enable = true,
-                        additional_vim_regex_highlighting = false,
-                    },
-                    matchup = {
-                        enable = true,
-                    },
-                }
-            end,
         },
-        { 'williamboman/mason.nvim', },
+        { 'williamboman/mason.nvim' },
         {
             'echasnovski/mini.nvim',
             version = false,

@@ -18,7 +18,7 @@ vim.opt.rtp:prepend(lazypath)
 vim.loader.enable()
 
 if vim.g.vscode then
-    require 'b_vscode'.setup()
+    require 'config.vscode'.setup()
 else
     require 'settings'.setup()
     require 'plugins'.setup()

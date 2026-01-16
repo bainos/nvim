@@ -24,6 +24,25 @@ function M.setup()
     vim.keymap.set('n', '<Leader>fm', ':lua MiniFiles.open()<cr>',
         { noremap = true, silent = true, desc = 'file browser', })
     
+    -- Formatting
+    vim.keymap.set('n', '<Leader>fr', function()
+        local file = vim.fn.expand('%:p')
+        if file == '' then
+            vim.notify('No file to format', vim.log.levels.WARN)
+            return
+        end
+        vim.fn.jobstart({ 'prettier', '--write', file }, {
+            on_exit = function(_, code)
+                if code == 0 then
+                    vim.cmd('checktime')  -- Reload file
+                    vim.notify('Formatted with Prettier', vim.log.levels.INFO)
+                else
+                    vim.notify('Prettier failed', vim.log.levels.ERROR)
+                end
+            end,
+        })
+    end, { noremap = true, silent = true, desc = 'format buffer with Prettier' })
+    
     -- YAML workflow-specific navigation
     vim.keymap.set('n', '<Leader>fk', function()
         builtin.find_files({ 

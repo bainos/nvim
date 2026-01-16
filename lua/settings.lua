@@ -65,14 +65,6 @@ function M.setup()
     vim.opt.matchtime   = 2    -- delay before showing matching paren
     vim.opt.mps         = vim.o.mps .. ',<:>'
 
-    -- White characters
-    --vim.opt.autoindent = true
-    --vim.opt.smartindent = true
-    --vim.opt.tabstop = 2 -- 1 tab = 2 spaces
-    --vim.opt.shiftwidth = 2 -- indentation rule
-    --vim.opt.formatoptions = 'qnj1' -- q  - comment formatting; n - numbered lists; j - remove comment when joining lines; 1 - don't break after one-letter word
-    --vim.opt.expandtab = true -- expand tab to spaces
-
     -- Backup files
     vim.opt.backup      = true                                     -- use backup files
     vim.opt.writebackup = false
@@ -80,11 +72,6 @@ function M.setup()
     vim.opt.undodir     = M.home() .. '/.config/nvim/tmp/undo//'   -- undo files
     vim.opt.backupdir   = M.home() .. '/.config/nvim/tmp/backup//' -- backups
     vim.opt.directory   = M.home() .. '/.config/nvim/tmp/swap//'   -- swap files
-
-    --vim.cmd([[
-    --au FileType python                  set ts=4 sw=4
-    --au BufRead,BufNewFile *.md          set ft=mkd tw=80 syntax=markdown
-    --]])
 
     -- Commands mode
     vim.opt.wildmenu    = true -- on TAB, complete options for system command
