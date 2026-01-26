@@ -10,7 +10,6 @@ M.config = {
     keymaps = {
         request = '<Leader>ai',
         accept = '<Tab>',
-        dismiss = '<Esc>',
     },
 }
 
@@ -46,14 +45,6 @@ function M.setup(opts)
         silent = true,
         expr = true,
         desc = 'Accept ghost text suggestion',
-    })
-
-    vim.keymap.set('n', '<Esc>', function()
-        ghost.dismiss()
-    end, {
-        noremap = true,
-        silent = true,
-        desc = 'Dismiss ghost text (NORMAL mode)',
     })
 
     -- INSERT mode trigger (Ctrl+Space)

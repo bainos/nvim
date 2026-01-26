@@ -8,7 +8,7 @@ Ultra-minimal Copilot-style inline suggestions powered by AWS Bedrock Claude.
 - ✅ Manual trigger only (no auto-suggestions)
 - ✅ AWS Bedrock Claude integration
 - ✅ Reuses existing AWS credentials
-- ✅ Simple: 3 files, ~170 lines of code
+- ✅ Simple: 3 files, ~450 lines of code
 
 ## Usage
 
@@ -19,8 +19,9 @@ Ultra-minimal Copilot-style inline suggestions powered by AWS Bedrock Claude.
 | `<Leader>ai` | Normal | Request completion | Ask Bedrock for code suggestion |
 | `<C-Space>` | **Insert** | Request completion | **Trigger from INSERT mode (recommended!)** |
 | `<Tab>` | Insert | Accept | Insert ghost text and continue typing |
-| `<C-]>` | Insert | Dismiss | Clear ghost text without accepting |
-| `<Esc>` | Normal | Dismiss | Clear ghost text |
+| `<Esc>` | Insert | Dismiss (1st press) | Clear ghost, stay in INSERT mode |
+| `<Esc>` | Insert | Exit INSERT (2nd press) | Normal Esc behavior |
+| `<C-]>` | Insert | Dismiss | Alternative dismiss method |
 
 ### Workflow
 
@@ -28,19 +29,22 @@ Ultra-minimal Copilot-style inline suggestions powered by AWS Bedrock Claude.
 1. While typing, press `<Ctrl+Space>`
 2. **Stay in INSERT mode** - ghost text appears
 3. Press `<Tab>` to accept → text inserted, **stays in INSERT mode**
-4. OR press `<Ctrl+]>` to dismiss → ghost cleared, stays in INSERT mode
-5. Continue typing naturally
+4. OR press `<Esc>` to dismiss → ghost cleared, stays in INSERT mode
+5. OR press `<C-]>` to dismiss → alternative dismiss method
+6. Continue typing naturally
 
 **Auto-dismiss:**
 - Ghost text auto-clears when you continue typing (ignoring suggestion)
 - Ghost text auto-clears when switching buffers
+- Ghost text auto-clears when leaving INSERT mode (Esc, Ctrl+C, etc.)
 - No ghost text pollution across requests
 
 **From NORMAL mode:**
 1. Position cursor where you want completion
 2. Press `<Leader>ai` (`,ai` by default)
 3. Wait 1-3 seconds for ghost text to appear
-4. Press `<Esc>` to dismiss
+4. Enter INSERT mode and press `<Tab>` to accept
+5. Or continue in NORMAL mode (ghost auto-dismissed when entering INSERT)
 
 ## Configuration
 
@@ -58,7 +62,6 @@ Default settings (in `lua/plugins/init.lua`):
             keymaps = {
                 request = '<Leader>ai',
                 accept = '<Tab>',
-                dismiss = '<Esc>',
             },
         })
     end,

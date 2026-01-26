@@ -94,15 +94,6 @@ Complete the code. Output ONLY the completion text (no prefixes, no markdown, no
         context.suffix ~= '' and context.suffix or '(end of file)'
     )
 
-    -- DEBUG: Log full prompt
-    local debug_file = io.open('/tmp/bedrock_prompt.txt', 'w')
-    if debug_file then
-        debug_file:write('=== PROMPT SENT TO BEDROCK ===\n\n')
-        debug_file:write(prompt)
-        debug_file:write('\n\n=== END PROMPT ===\n')
-        debug_file:close()
-    end
-
     return prompt
 end
 
@@ -135,19 +126,6 @@ function M.get_context()
 
     local prefix = table.concat(prefix_lines, '\n')
     local suffix = table.concat(suffix_lines, '\n')
-
-    -- DEBUG: Log context extraction
-    local debug_file = io.open('/tmp/bedrock_context.txt', 'w')
-    if debug_file then
-        debug_file:write('=== CONTEXT EXTRACTION ===\n\n')
-        debug_file:write('Cursor Position: line=' .. cursor_line .. ', col=' .. cursor_col .. '\n')
-        debug_file:write('Total buffer lines: ' .. #lines .. '\n\n')
-        debug_file:write('PREFIX (length=' .. #prefix .. '):\n')
-        debug_file:write('---\n' .. prefix .. '\n---\n\n')
-        debug_file:write('SUFFIX (length=' .. #suffix .. '):\n')
-        debug_file:write('---\n' .. suffix .. '\n---\n\n')
-        debug_file:close()
-    end
 
     return {
         prefix = prefix,
@@ -216,7 +194,6 @@ function M.request_bedrock(context)
     )
 
     -- Execute curl command
-    vim.notify('Requesting completion from Bedrock...', vim.log.levels.INFO)
     local output = vim.fn.system(curl_cmd)
     local exit_code = vim.v.shell_error
 
@@ -229,61 +206,13 @@ function M.request_bedrock(context)
     local ok, response = pcall(vim.fn.json_decode, output)
     if not ok then
         vim.notify('Failed to parse Bedrock response', vim.log.levels.ERROR)
-        -- DEBUG: Log parse error
-        local debug_file = io.open('/tmp/bedrock_debug.json', 'w')
-        if debug_file then
-            debug_file:write('=== PARSE ERROR ===\n\n')
-            debug_file:write('Raw output:\n' .. output .. '\n')
-            debug_file:close()
-        end
         return nil
-    end
-
-    -- DEBUG: Log full response
-    local debug_file = io.open('/tmp/bedrock_debug.json', 'w')
-    if debug_file then
-        debug_file:write('=== BEDROCK API RESPONSE ===\n\n')
-        debug_file:write('Raw output:\n')
-        debug_file:write(output)
-        debug_file:write('\n\n=== PARSED RESPONSE ===\n\n')
-        debug_file:write(vim.inspect(response))
-        debug_file:write('\n\n=== RESPONSE STRUCTURE CHECK ===\n\n')
-        debug_file:write('response.content exists: ' .. tostring(response.content ~= nil) .. '\n')
-        if response.content then
-            debug_file:write('response.content[1] exists: ' .. tostring(response.content[1] ~= nil) .. '\n')
-            if response.content[1] then
-                debug_file:write('response.content[1].text exists: ' .. tostring(response.content[1].text ~= nil) .. '\n')
-                if response.content[1].text then
-                    debug_file:write('response.content[1].text value: [' .. response.content[1].text .. ']\n')
-                    debug_file:write('Text length: ' .. #response.content[1].text .. '\n')
-                end
-            end
-        end
-        if response.error then
-            debug_file:write('\nERROR in response: ' .. vim.inspect(response.error) .. '\n')
-        end
-        debug_file:close()
     end
 
     -- Extract completion text
     if response.content and response.content[1] and response.content[1].text then
         local completion = response.content[1].text
-        local cleaned = clean_response(completion)
-        
-        -- DEBUG: Log cleaning result
-        local debug_file2 = io.open('/tmp/bedrock_debug.json', 'a')
-        if debug_file2 then
-            debug_file2:write('\n=== CLEANING RESULT ===\n\n')
-            debug_file2:write('Before clean: [' .. completion .. ']\n')
-            debug_file2:write('After clean: [' .. tostring(cleaned) .. ']\n')
-            debug_file2:write('Cleaned is nil: ' .. tostring(cleaned == nil) .. '\n')
-            if cleaned then
-                debug_file2:write('Cleaned length: ' .. #cleaned .. '\n')
-            end
-            debug_file2:close()
-        end
-        
-        return cleaned
+        return clean_response(completion)
     end
 
     vim.notify('No completion in Bedrock response', vim.log.levels.WARN)

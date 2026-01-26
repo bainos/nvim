@@ -5,8 +5,6 @@ local ghost_state = {
     ns_id = vim.api.nvim_create_namespace('bedrock_ghost'),
     suggestion = nil,
     bufnr = nil,
-    line = nil,
-    col = nil,
 }
 
 function M.show(suggestion_text)
@@ -48,8 +46,6 @@ function M.show(suggestion_text)
     -- Store state
     ghost_state.suggestion = suggestion_text
     ghost_state.bufnr = bufnr
-    ghost_state.line = line
-    ghost_state.col = col
 end
 
 function M.accept()
@@ -94,8 +90,6 @@ function M.dismiss()
     end
     ghost_state.suggestion = nil
     ghost_state.bufnr = nil
-    ghost_state.line = nil
-    ghost_state.col = nil
 end
 
 function M.has_suggestion()

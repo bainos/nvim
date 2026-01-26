@@ -31,13 +31,24 @@ function M.setup()
             vim.notify('No file to format', vim.log.levels.WARN)
             return
         end
-        vim.fn.jobstart({ 'prettier', '--write', file }, {
+        -- Use Mason's Prettier installation
+        local prettier_path = vim.fn.stdpath('data') .. '/mason/bin/prettier'
+        
+        vim.fn.jobstart({ prettier_path, '--write', file }, {
             on_exit = function(_, code)
                 if code == 0 then
                     vim.cmd('checktime')  -- Reload file
                     vim.notify('Formatted with Prettier', vim.log.levels.INFO)
                 else
-                    vim.notify('Prettier failed', vim.log.levels.ERROR)
+                    vim.notify('Prettier failed with code: ' .. tostring(code), vim.log.levels.ERROR)
+                end
+            end,
+            on_stderr = function(_, data)
+                if data and #data > 0 then
+                    local err = table.concat(data, '\n')
+                    if err and err ~= '' then
+                        vim.notify('Prettier error: ' .. err, vim.log.levels.ERROR)
+                    end
                 end
             end,
         })
